@@ -13,6 +13,7 @@ const approveResponse = (req, res, next) => {
       sentPasswordReset: false
     }
   });
+  const emailContent = req.body.emailContent;
 
   surveyGizmo.getResponseData(req.params.responseId)
   .then(response => {

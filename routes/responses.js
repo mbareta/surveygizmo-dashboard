@@ -1,5 +1,6 @@
 const express = require('express');
 const surveyGizmo = require('../lib/SurveyGizmo');
+const Mailer = require('../lib/mailer');
 const { approveResponse } = require('../middlewares/responses');
 
 const router = express.Router();
@@ -9,6 +10,10 @@ router.get('/', (req, res, next) =>
   .then(json => res.send(json))
   .catch(error => next(error))
 );
+
+router.get('/email', (req, res, next) => {
+  res.send(Mailer.send());
+});
 
 router.get('/:responseId', (req, res, next) =>
   surveyGizmo.getResponseData(req.params.responseId)

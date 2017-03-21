@@ -6,14 +6,19 @@ module.exports = class ApproveModal extends React.Component {
 
     this.approveResponse = this.approveResponse.bind(this);
     this.close = this.close.bind(this);
+    this.updateEmailContent = this.updateEmailContent.bind(this);
 
     this.state = {
-      open: false
+      open: false,
+      emailContent: ''
     };
   }
 
   approveResponse() {
     const xhr = new XMLHttpRequest();
+    const data = {
+      emailContent: this.state.emailContent
+    };
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
@@ -25,22 +30,32 @@ module.exports = class ApproveModal extends React.Component {
       }
     };
 
-    xhr.open('POST', `/responses/${this.props.responseId}/approve`, true);
-    xhr.send();
+    xhr.open('POST', `/responses/${this.props.response.id}/approve`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(data));
   }
 
   close() {
     this.setState({ open: false });
   }
 
+  updateEmailContent(textarea) {
+    this.setState({ emailContent: textarea.value });
+  }
+
   componentWillUpdate(nextProps) {
     if (!(nextProps === this.props)) {
-      this.setState({ open: !!nextProps.responseId });
+      this.setState({
+        open: !!nextProps.response,
+        emailContent: `Dear ${nextProps.response && nextProps.response.questions['Full name']},
+we have approved your account.
+Go to edx and log in.`
+      });
     }
   }
 
   render() {
-    const { responseId } = this.props;
+    const { response } = this.props;
 
     return this.state.open && (
       <div className="approve-modal">
@@ -48,11 +63,18 @@ module.exports = class ApproveModal extends React.Component {
           Close
         </button>
         <div className="approve-modal-content">
-          <h1>Are you sure you want to approve this application? {responseId}</h1>
+          <h1>Approve application for {response.questions['Full name']}?</h1>
+          <label htmlFor="">
+            The following email will be sent to {response.questions['Submitter Email']}:
+          </label>
+          <textarea
+            rows="6"
+            onChange={this.updateEmailContent}
+            value={this.state.emailContent}
+          />
           <button onClick={this.approveResponse}>Yes</button>
           <button onClick={this.close}>No</button>
           <hr/>
-          <br/>
           <br/>
           <p>
             <b>WARNING</b>: Approving this application will

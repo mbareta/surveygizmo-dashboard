@@ -10,7 +10,7 @@ module.exports = class FormResponses extends React.Component {
 
     this.state = {
       responses: [],
-      approveResponseId: null
+      approveResponse: null
     };
   }
 
@@ -30,8 +30,8 @@ module.exports = class FormResponses extends React.Component {
     xhr.send();
   }
 
-  showApproveModal(approveResponseId) {
-    this.setState({ approveResponseId });
+  showApproveModal(approveResponse) {
+    this.setState({ approveResponse });
   }
 
   componentDidMount() {
@@ -67,7 +67,7 @@ module.exports = class FormResponses extends React.Component {
           </tbody>
         </table>
 
-        <ApproveModal responseId={this.state.approveResponseId} />
+        <ApproveModal response={this.state.approveResponse} />
       </div>
     );
   }
