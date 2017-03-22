@@ -10,7 +10,7 @@ module.exports = class FormResponse extends React.Component {
   }
 
   render() {
-    const { response, showApproveModal } = this.props;
+    const { response, showApproveModal, showRejectModal } = this.props;
     const { questions } = response;
 
     return (
@@ -21,6 +21,7 @@ module.exports = class FormResponse extends React.Component {
         <td>{(new Date(response.submittedAt)).toLocaleDateString()}</td>
         <td>
           <button onClick={() => showApproveModal(response)}>Approve</button>
+          <button onClick={() => showRejectModal(response)}>Reject</button>
         </td>
       </tr>
     );

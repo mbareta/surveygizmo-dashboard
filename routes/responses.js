@@ -1,7 +1,7 @@
 const express = require('express');
 const surveyGizmo = require('../lib/SurveyGizmo');
 const Mailer = require('../lib/mailer');
-const { approveResponse } = require('../middlewares/responses');
+const { approveResponse, rejectResponse } = require('../middlewares/responses');
 
 const router = express.Router();
 
@@ -12,15 +12,16 @@ router.get('/', (req, res, next) =>
 );
 
 router.get('/email', (req, res, next) => {
-  res.send(
-    Mailer.send({
-      from: '"FastTrac" <admin@localhost>',
-      to: 'mbareta@extensionengine.com',
-      subject: 'Testis',
-      text: 'Textis',
-      html: '<i> HTML </i>'
-    })
-  );
+  Mailer.send({
+    to: 'mbareta@extensionengine.com',
+    subject: 'Test',
+    text: 'Contents',
+    html: '<i> HTML Contents </i>'
+  })
+  .then(result => {
+    res.send(result);
+  })
+  .catch(error => next(error));
 });
 
 router.get('/:responseId', (req, res, next) =>
@@ -30,5 +31,7 @@ router.get('/:responseId', (req, res, next) =>
 );
 
 router.post('/:responseId/approve', approveResponse);
+
+router.post('/:responseId/reject', rejectResponse);
 
 module.exports = router;

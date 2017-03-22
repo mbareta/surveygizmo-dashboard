@@ -1,5 +1,6 @@
 const surveyGizmo = require('../lib/SurveyGizmo');
 const EdxApi = require('../lib/EdxApi');
+const Mailer = require('../lib/mailer');
 
 const SurveyResponse = require('../models/surveyResponse');
 
@@ -40,8 +41,27 @@ const approveResponse = (req, res, next) => {
 
     return surveyResponse.save().then(() => account);
   })
+  .then(account => Mailer.send({
+    to: account.email,
+    subject: 'FastTrac Application Approved',
+    text: emailContent,
+    html: emailContent }).then(() => account))
   .then(account => res.send(account.username))
   .catch(error => next(error));
 };
 
-module.exports = { approveResponse };
+const rejectResponse = (req, res, next) => {
+  const { email, emailContent } = req.body;
+  Mailer.send({
+    to: email,
+    subject: 'FastTrac Application Rejected',
+    text: emailContent,
+    html: emailContent
+  })
+  .then(result => {
+    res.send(result);
+  })
+  .catch(error => next(error));
+};
+
+module.exports = { approveResponse, rejectResponse };
