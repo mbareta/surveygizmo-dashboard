@@ -12,7 +12,15 @@ router.get('/', (req, res, next) =>
 );
 
 router.get('/email', (req, res, next) => {
-  res.send(Mailer.send());
+  res.send(
+    Mailer.send({
+      from: '"FastTrac" <admin@localhost>',
+      to: 'mbareta@extensionengine.com',
+      subject: 'Testis',
+      text: 'Textis',
+      html: '<i> HTML </i>'
+    })
+  );
 });
 
 router.get('/:responseId', (req, res, next) =>
