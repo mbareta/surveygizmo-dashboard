@@ -60,7 +60,7 @@ const rejectResponse = (req, res, next) => {
       accountCreated: null,
       grantedCcxRole: null,
       sentPasswordReset: null,
-      rejected: null
+      rejected: new Date()
     }
   });
 
@@ -77,7 +77,6 @@ const rejectResponse = (req, res, next) => {
     });
   })
   .then(result => {
-    SurveyResponse.rejected = new Date();
     surveyResponse.save();
     res.send(result);
   })
