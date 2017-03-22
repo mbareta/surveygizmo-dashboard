@@ -38,9 +38,7 @@ module.exports = class RejectModal extends React.Component {
 
   close() {
     const { close } = this.props;
-    if (typeof close === 'function') {
-      close();
-    }
+    typeof close === 'function' && close();
     this.setState({ open: false });
   }
 
