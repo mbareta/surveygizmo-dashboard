@@ -46,7 +46,8 @@ const approveResponse = (req, res, next) => {
     to: account.email,
     subject: 'FastTrac Application Approved',
     text: emailContent,
-    html: emailContent }).then(() => account))
+    html: emailContent }).then(() => account)
+  )
   .then(account => res.send(account.username))
   .catch(error => next(error));
 };
