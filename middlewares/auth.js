@@ -41,7 +41,7 @@ const checkStaff = (req, res, next) => {
   }
 };
 
-const storeUserRole = (req) => {
+const storeUserRole = req => {
   const accessToken = req.session.token && req.session.token.access_token;
   const options = {
     method: 'GET',
