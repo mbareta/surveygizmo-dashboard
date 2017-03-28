@@ -19,7 +19,29 @@ const getUserInfo = (req, res) => {
   .catch(error => res.send(`Access Token Error ${error.message}`));
 };
 
-const interceptNonStaff = (req, res, next) => {
+
+const requiresStaffRole = (req, res, next) => {
+  if (typeof req.session.isStaff === 'undefined') {
+    storeUserRole(req)
+    .then(() => {
+      checkStaff(req, res, next);
+    });
+  } else {
+    checkStaff(req, res, next);
+  }
+};
+
+const checkStaff = (req, res, next) => {
+  if (req.session.isStaff) {
+    next();
+  }
+  else {
+    res.status(403);
+    res.send('Access is forbidden for non-staff user!');
+  }
+};
+
+const storeUserRole = (req) => {
   const accessToken = req.session.token && req.session.token.access_token;
   const options = {
     method: 'GET',
@@ -29,18 +51,10 @@ const interceptNonStaff = (req, res, next) => {
     }
   };
 
-  axios(options)
+  return axios(options)
   .then(response => {
-    const isStaff = response.data;
-
-    if (isStaff) {
-      next();
-    } else {
-      res.status(403);
-      res.send('Access is forbidden for non-staff user!');
-    }
-  })
-  .catch(error => next(error));
+    req.session.isStaff = response.data;
+  });
 };
 
-module.exports = { getUserInfo, interceptNonStaff };
+module.exports = { getUserInfo, requiresStaffRole };

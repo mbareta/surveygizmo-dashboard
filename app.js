@@ -12,7 +12,7 @@ const { skipWhitelistedRoutes, getEmailFromSession } = require('./lib/helpers');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const responses = require('./routes/responses');
-const { interceptNonStaff } = require('./middlewares/auth');
+const { requiresStaffRole } = require('./middlewares/auth');
 
 const app = express();
 
@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(skipWhitelistedRoutes(redirectAnonymous));
 
-app.use(skipWhitelistedRoutes(interceptNonStaff));
+app.use(skipWhitelistedRoutes(requiresStaffRole));
 
 app.use((req, _, next) => {
   app.locals.email = req.email = getEmailFromSession(req); // eslint-disable-line
