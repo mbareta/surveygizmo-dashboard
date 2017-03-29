@@ -1,4 +1,7 @@
+/* eslint-disable */
+
 const React = require('react');
+const ReactPaginate = require('react-paginate');
 const FormResponse = require('./formResponse/formResponse.jsx');
 const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
@@ -12,13 +15,15 @@ module.exports = class FormResponses extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.search = this.search.bind(this);
     this.filter = this.filter.bind(this);
+    this.getNextPage = this.getNextPage.bind(this);
 
     this.state = {
       search: '',
       filter: '',
       responses: [],
       approveResponse: null,
-      rejectResponse: null
+      rejectResponse: null,
+      currentPage: 1
     };
   }
 
@@ -27,7 +32,13 @@ module.exports = class FormResponses extends React.Component {
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        this.setState({ responses: JSON.parse(xhr.responseText) });
+        const data = JSON.parse(xhr.responseText);
+
+        this.setState({
+          responses: data.data,
+          currentPage: data.currentPage,
+          pageCount: data.pageCount
+        });
       }
       else if (xhr.readyState === 4 && xhr.status !== 200) {
         throw new Error('Fetching responses failed');
@@ -36,6 +47,10 @@ module.exports = class FormResponses extends React.Component {
 
     xhr.open('GET', '/responses', true);
     xhr.send();
+  }
+
+  getNextPage() {
+    console.log('next page');
   }
 
   showApproveModal(approveResponse) {
@@ -68,6 +83,8 @@ module.exports = class FormResponses extends React.Component {
   render() {
     const { responses, approveResponse, rejectResponse, search, filter } = this.state;
     let filteredResponses = [];
+
+    debugger;
 
     if (search) {
       filteredResponses = responses.filter(r =>
@@ -141,6 +158,12 @@ module.exports = class FormResponses extends React.Component {
             }
           </tbody>
         </table>
+        <ReactPaginate
+          pageCount={this.state.pageCount}
+          onPageChange={this.getNextPage()}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+        />
 
         <ApproveModal response={approveResponse} close={this.closeModal} />
         <RejectModal response={rejectResponse} close={this.closeModal} />

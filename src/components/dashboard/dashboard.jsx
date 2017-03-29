@@ -7,6 +7,6 @@ module.exports = class Dashboard extends React.Component {
       <div>
         <FormResponses />
       </div>
-    )
+    );
   }
-}
+};
