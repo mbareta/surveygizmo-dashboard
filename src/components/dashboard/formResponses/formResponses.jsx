@@ -6,7 +6,7 @@ const FormResponse = require('./formResponse/formResponse.jsx');
 const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 
-module.exports = class FormResponses extends React.Component {
+module.exports = class FormResponses extends React.PureComponent {
   constructor() {
     super();
 
@@ -15,7 +15,8 @@ module.exports = class FormResponses extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.search = this.search.bind(this);
     this.filter = this.filter.bind(this);
-    this.getNextPage = this.getNextPage.bind(this);
+    this.getPageData = this.getPageData.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
 
     this.state = {
       search: '',
@@ -49,8 +50,31 @@ module.exports = class FormResponses extends React.Component {
     xhr.send();
   }
 
-  getNextPage() {
-    console.log('next page');
+  getPageData() {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+
+        this.setState({
+          responses: data.data
+        });
+      }
+      else if (xhr.readyState === 4 && xhr.status !== 200) {
+        throw new Error('Fetching responses failed');
+      }
+    };
+    xhr.open('GET', `/responses/page/${this.state.currentPage}`, true);
+    xhr.send();
+  }
+
+  handlePageClick(data) {
+    const selected = data.selected + 1;
+
+    this.setState({ currentPage: selected }, () => {
+      this.getPageData();
+    });
   }
 
   showApproveModal(approveResponse) {
@@ -83,8 +107,6 @@ module.exports = class FormResponses extends React.Component {
   render() {
     const { responses, approveResponse, rejectResponse, search, filter } = this.state;
     let filteredResponses = [];
-
-    debugger;
 
     if (search) {
       filteredResponses = responses.filter(r =>
@@ -160,9 +182,9 @@ module.exports = class FormResponses extends React.Component {
         </table>
         <ReactPaginate
           pageCount={this.state.pageCount}
-          onPageChange={this.getNextPage()}
+          onPageChange={this.handlePageClick}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={2}
         />
 
         <ApproveModal response={approveResponse} close={this.closeModal} />
