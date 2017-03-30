@@ -180,13 +180,14 @@ module.exports = class FormResponses extends React.PureComponent {
             }
           </tbody>
         </table>
-        <ReactPaginate
-          pageCount={this.state.pageCount}
-          onPageChange={this.handlePageClick}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={2}
-        />
-
+        <div className='pagination'>
+          <ReactPaginate
+            pageCount={this.state.pageCount}
+            onPageChange={this.handlePageClick}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={2}
+          />
+        </div>
         <ApproveModal response={approveResponse} close={this.closeModal} />
         <RejectModal response={rejectResponse} close={this.closeModal} />
       </div>
