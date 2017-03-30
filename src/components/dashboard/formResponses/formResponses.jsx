@@ -3,16 +3,19 @@
 const React = require('react');
 const ReactPaginate = require('react-paginate');
 const FormResponse = require('./formResponse/formResponse.jsx');
+const FormResponseDetails = require('./formResponseDetails/formResponseDetails.jsx');
 const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 
-module.exports = class FormResponses extends React.PureComponent {
+class FormResponses extends React.PureComponent {
   constructor() {
     super();
 
+    this.viewResponse = this.viewResponse.bind(this);
     this.showApproveModal = this.showApproveModal.bind(this);
     this.showRejectModal = this.showRejectModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.closeDetails = this.closeDetails.bind(this);
     this.search = this.search.bind(this);
     this.filter = this.filter.bind(this);
     this.getPageData = this.getPageData.bind(this);
@@ -22,6 +25,7 @@ module.exports = class FormResponses extends React.PureComponent {
       search: '',
       filter: '',
       responses: [],
+      viewResponse: null,
       approveResponse: null,
       rejectResponse: null,
       currentPage: 1
@@ -77,6 +81,10 @@ module.exports = class FormResponses extends React.PureComponent {
     });
   }
 
+  viewResponse(viewResponse) {
+    this.setState({ viewResponse });
+  }
+
   showApproveModal(approveResponse) {
     this.setState({ approveResponse });
   }
@@ -89,6 +97,12 @@ module.exports = class FormResponses extends React.PureComponent {
     this.setState({
       rejectResponse: null,
       approveResponse: null
+    });
+  }
+
+  closeDetails() {
+    this.setState({
+      viewResponse: null
     });
   }
 
@@ -105,7 +119,7 @@ module.exports = class FormResponses extends React.PureComponent {
   }
 
   render() {
-    const { responses, approveResponse, rejectResponse, search, filter } = this.state;
+    const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
     let filteredResponses = [];
 
     if (search) {
@@ -173,8 +187,7 @@ module.exports = class FormResponses extends React.PureComponent {
                 <FormResponse
                   key={`form-response-${response.id}`}
                   response={response}
-                  showApproveModal={this.showApproveModal}
-                  showRejectModal={this.showRejectModal}
+                  viewResponse={this.viewResponse}
                 />
               )
             }
@@ -188,9 +201,19 @@ module.exports = class FormResponses extends React.PureComponent {
             pageRangeDisplayed={2}
           />
         </div>
+
+        <FormResponseDetails
+          response={viewResponse}
+          close={this.closeDetails}
+          showApproveModal={this.showApproveModal}
+          showRejectModal={this.showRejectModal}
+        />
+
         <ApproveModal response={approveResponse} close={this.closeModal} />
         <RejectModal response={rejectResponse} close={this.closeModal} />
       </div>
     );
   }
 };
+
+module.exports = FormResponses;

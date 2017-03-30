@@ -16,6 +16,7 @@ class FormResponse extends React.PureComponent {
       return 'Pending';
     }
     else if (status.rejected) {
+      this.setState({ approved: false });
       return 'Rejected';
     }
     else if (
@@ -23,13 +24,14 @@ class FormResponse extends React.PureComponent {
       status.grantedCcxRole &&
       status.accountCreated
     ) {
+      this.setState({ approved: true });
       return 'Approved';
     }
     return 'Error. Stuck in limbo.';
   }
 
   render() {
-    const { response, showApproveModal, showRejectModal } = this.props;
+    const { response, viewResponse } = this.props;
     const { questions } = response;
 
     return (
@@ -40,8 +42,7 @@ class FormResponse extends React.PureComponent {
         <td>{(new Date(response.submittedAt)).toLocaleDateString()}</td>
         <td>{this.getStatusString()}</td>
         <td>
-          <button onClick={() => showApproveModal(response)}>Approve</button>
-          <button onClick={() => showRejectModal(response)}>Reject</button>
+          <button onClick={() => viewResponse(response)}>View</button>
         </td>
       </tr>
     );
@@ -50,8 +51,7 @@ class FormResponse extends React.PureComponent {
 
 FormResponse.propTypes = {
   response: React.PropTypes.object.isRequired, // eslint-disable-line
-  showApproveModal: React.PropTypes.func.isRequired,
-  showRejectModal: React.PropTypes.func.isRequired
+  viewResponse: React.PropTypes.func.isRequired
 };
 
 module.exports = FormResponse;
