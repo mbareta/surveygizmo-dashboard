@@ -68,7 +68,8 @@ class FormResponses extends React.PureComponent {
   onStoreChange() {
     this.setState({
       responses: responsesStore.getResponses(this.state.currentPage),
-      pageCount: responsesStore.getTotalCount()
+      totalCount: responsesStore.getTotalCount(),
+      pageCount: responsesStore.getPageCount()
     });
   }
 
@@ -109,7 +110,7 @@ class FormResponses extends React.PureComponent {
     return (
       <div>
         <div className="stats">
-          <h2>Affiliate Signup Responses ({this.state.pageCount})</h2>
+          <h2>Affiliate Signup Responses ({this.state.totalCount})</h2>
           <span>
             <h1>{responses.filter(r => !r.status).length}</h1>
             <h3>Unprocessed responses</h3>

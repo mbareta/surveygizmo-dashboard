@@ -14,7 +14,7 @@ class ResponsesStore extends EventEmitter {
 
   getResponses() {
     return this.responses.map(r => {
-      r.statusString = getStatusString(r);
+      r.statusString = getStatusString(r); // eslint-disable-line
       return r;
     });
   }
@@ -23,9 +23,14 @@ class ResponsesStore extends EventEmitter {
     return this.responsesTotalCount;
   }
 
+  getPageCount() {
+    return this.responsesPageCount;
+  }
+
   setResponses(responses) {
     this.responses = responses.data;
-    this.responsesTotalCount = responses.pageCount;
+    this.responsesPageCount = responses.pageCount;
+    this.responsesTotalCount = responses.totalCount;
   }
 
   getViewResponse() {
@@ -41,7 +46,7 @@ class ResponsesStore extends EventEmitter {
   }
 
   setResponseApproved(approvedResponse) {
-    const response = this.responses.find(r => r.id == approvedResponse.responseId);
+    const response = this.responses.find(r => r.id == approvedResponse.responseId); // eslint-disable-line
     if (response.status) {
       response.status.sentPasswordReset = Date.now();
     }
@@ -55,7 +60,7 @@ class ResponsesStore extends EventEmitter {
   }
 
   setResponseRejected(rejectedResponse) {
-    const response = this.responses.find(r => r.id == rejectedResponse.responseId);
+    const response = this.responses.find(r => r.id == rejectedResponse.responseId); // eslint-disable-line
     if (response.status) {
       response.status.rejected = Date.now();
     }
