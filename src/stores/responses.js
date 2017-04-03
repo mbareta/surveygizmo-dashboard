@@ -27,10 +27,25 @@ class ResponsesStore extends EventEmitter {
     return this.responsesPageCount;
   }
 
+  getApprovedCount() {
+    return this.responsesApprovedCount;
+  }
+
+  getRejectedCount() {
+    return this.responsesRejectedCount;
+  }
+
+  getUnprocessedCount() {
+    return this.responsesUnprocessedCount;
+  }
+
   setResponses(responses) {
     this.responses = responses.data;
     this.responsesPageCount = responses.pageCount;
     this.responsesTotalCount = responses.totalCount;
+    this.responsesApprovedCount = responses.approvedCount;
+    this.responsesRejectedCount = responses.rejectedCount;
+    this.responsesUnprocessedCount = responses.unprocessedCount;
   }
 
   getViewResponse() {

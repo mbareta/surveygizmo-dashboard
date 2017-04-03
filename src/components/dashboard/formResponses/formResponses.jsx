@@ -69,7 +69,10 @@ class FormResponses extends React.PureComponent {
     this.setState({
       responses: responsesStore.getResponses(this.state.currentPage),
       totalCount: responsesStore.getTotalCount(),
-      pageCount: responsesStore.getPageCount()
+      pageCount: responsesStore.getPageCount(),
+      approvedCount: responsesStore.getApprovedCount(),
+      rejectedCount: responsesStore.getRejectedCount(),
+      unprocessedCount: responsesStore.getUnprocessedCount(),
     });
   }
 
@@ -110,17 +113,17 @@ class FormResponses extends React.PureComponent {
     return (
       <div>
         <div className="stats">
-          <h2>Affiliate Signup Responses ({this.state.totalCount})</h2>
+          <h2>Affiliate Signup Responses ({this.state.totalCount || 0})</h2>
           <span>
-            <h1>{responses.filter(r => !r.status).length}</h1>
+            <h1>{this.state.unprocessedCount}</h1>
             <h3>Unprocessed responses</h3>
           </span>
           <span>
-            <h1>{responses.filter(r => r.status && r.status.sentPasswordReset).length}</h1>
+            <h1>{this.state.approvedCount}</h1>
             <h3>Approved responses</h3>
           </span>
           <span>
-            <h1>{responses.filter(r => r.status && r.status.rejected).length}</h1>
+            <h1>{this.state.rejectedCount}</h1>
             <h3>Rejected responses</h3>
           </span>
           <div>
