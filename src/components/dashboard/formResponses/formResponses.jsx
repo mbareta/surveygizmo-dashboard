@@ -109,7 +109,7 @@ class FormResponses extends React.PureComponent {
     return (
       <div>
         <div className="stats">
-          <h2>Affiliate Signup Responses ({responses.length})</h2>
+          <h2>Affiliate Signup Responses ({this.state.pageCount})</h2>
           <span>
             <h1>{responses.filter(r => !r.status).length}</h1>
             <h3>Unprocessed responses</h3>
