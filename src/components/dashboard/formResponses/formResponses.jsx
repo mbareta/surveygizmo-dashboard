@@ -85,12 +85,6 @@ class FormResponses extends React.PureComponent {
     responsesStore.removeChangeListener(this.onStoreChange);
   }
 
-  componentWilLReceiveProps(nextProps) {
-    if (this.props !== nextProps) {
-      this.props = nextProps;
-    }
-  }
-
   render() {
     const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
     let filteredResponses = [];

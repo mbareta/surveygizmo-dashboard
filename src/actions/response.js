@@ -41,9 +41,11 @@ class ResponseActions {
     const xhr = new XMLHttpRequest(); // eslint-disable-line
     const data = { emailContent };
 
+    debugger;
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
         const surveyResponse = JSON.parse(xhr.responseText);
+
 
         dispatcher.handleAction({
           actionType: responseConstants.APPROVE_RESPONSE,
