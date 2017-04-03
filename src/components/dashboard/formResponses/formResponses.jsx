@@ -118,7 +118,7 @@ class FormResponses extends React.PureComponent {
     return (
       <div>
         <div className="stats">
-          <h2>Affiliate Signup Responses ({this.state.totalCount || 0})</h2>
+          <h2>Affiliate Signup Responses ({this.state.totalCount})</h2>
           <span>
             <h1>{this.state.unprocessedCount}</h1>
             <h3>Unprocessed responses</h3>
