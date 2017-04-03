@@ -72,6 +72,8 @@ class ResponsesStore extends EventEmitter {
         accountCreated: Date.now()
       };
     }
+
+    this.updateCountersOnApprove();
   }
 
   setResponseRejected(rejectedResponse) {
@@ -84,6 +86,18 @@ class ResponsesStore extends EventEmitter {
         rejected: Date.now()
       };
     }
+
+    this.updateCountersOnReject();
+  }
+
+  updateCountersOnApprove() {
+    this.responsesApprovedCount += 1;
+    this.responsesUnprocessedCount -= 1;
+  }
+
+  updateCountersOnReject() {
+    this.responsesRejectedCount += 1;
+    this.responsesUnprocessedCount -= 1;
   }
 
   // generic store stuff
