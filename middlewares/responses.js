@@ -5,6 +5,9 @@ const Mailer = require('../lib/mailer');
 const SurveyResponse = require('../models/surveyResponse');
 
 const approveResponse = (req, res, next) => {
+  let response;
+  let createdAccount;
+
   const surveyResponse = new SurveyResponse({
     responseId: 0,
     submittedAt: '',
@@ -19,34 +22,34 @@ const approveResponse = (req, res, next) => {
   const emailContent = req.body.emailContent;
 
   surveyGizmo.getResponseData(req.params.responseId)
-  .then(response => {
+  .then(responseData => {
+    response = responseData;
     surveyResponse.responseId = response.id;
     surveyResponse.submittedAt = response.submittedAt;
     surveyResponse.questions = response.questions;
-
-    return surveyResponse.save().then(() => response);
+    surveyResponse.save();
   })
-  .then(response => EdxApi.createAccount(response.questions))
+  .then(() => EdxApi.createAccount(response.questions))
   .then(account => {
+    createdAccount = account;
     surveyResponse.status.accountCreated = new Date();
-    return surveyResponse.save().then(() => account);
+    surveyResponse.save();
   })
-  .then(account => EdxApi.grantCcxRole(account, req.session.token.access_token))
-  .then(account => {
+  .then(() => EdxApi.grantCcxRole(createdAccount, req.session.token.access_token))
+  .then(() => {
     surveyResponse.status.grantedCcxRole = new Date();
-
-    return surveyResponse.save().then(() => account);
+    surveyResponse.save();
   })
-  .then(account => EdxApi.sendResetPasswordRequest(account))
-  .then(account => {
+  .then(() => EdxApi.sendResetPasswordRequest(createdAccount))
+  .then(() => {
     surveyResponse.status.sentPasswordReset = new Date();
-    return surveyResponse.save().then(() => account);
+    surveyResponse.save();
   })
-  .then(account => Mailer.send({
-    to: account.email,
+  .then(() => Mailer.send({
+    to: createdAccount.email,
     subject: 'FastTrac Application Approved',
     text: emailContent,
-    html: emailContent }).then(() => account)
+    html: emailContent })
   )
   .then(() => res.send(surveyResponse))
   .catch(error => next(error));
