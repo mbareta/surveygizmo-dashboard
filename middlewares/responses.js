@@ -5,6 +5,26 @@ const Mailer = require('../lib/mailer');
 const SurveyResponse = require('../models/surveyResponse');
 
 const approveResponse = (req, res, next) => {
+  const token = req.session.token.access_token;
+
+  SurveyResponse.findOne({ 'questions.Submitter Email': req.body.email })
+  .then(surveyResponse => {
+    if (surveyResponse) {
+      const response = surveyResponse.toObject();
+      const account = { username: response.questions['Full name'].replace(/ /g, '') };
+      return EdxApi.grantCcxRole(account, token)
+      .then(() => res.send(response));
+    }
+
+    const emailContent = req.body.emailContent;
+    const responseId = req.params.responseId;
+    return doApproveResponse(emailContent, responseId, token)
+    .then(response => res.send(response));
+  })
+  .catch(error => next(error));
+};
+
+const doApproveResponse = (emailContent, responseId, token) => {
   let response;
   let createdAccount;
 
@@ -19,9 +39,8 @@ const approveResponse = (req, res, next) => {
       rejected: null
     }
   });
-  const emailContent = req.body.emailContent;
 
-  surveyGizmo.getResponseData(req.params.responseId)
+  return surveyGizmo.getResponseData(responseId)
   .then(responseData => {
     response = responseData;
     surveyResponse.responseId = response.id;
@@ -35,7 +54,7 @@ const approveResponse = (req, res, next) => {
     surveyResponse.status.accountCreated = new Date();
     surveyResponse.save();
   })
-  .then(() => EdxApi.grantCcxRole(createdAccount, req.session.token.access_token))
+  .then(() => EdxApi.grantCcxRole(createdAccount, token))
   .then(() => {
     surveyResponse.status.grantedCcxRole = new Date();
     surveyResponse.save();
@@ -45,14 +64,16 @@ const approveResponse = (req, res, next) => {
     surveyResponse.status.sentPasswordReset = new Date();
     surveyResponse.save();
   })
-  .then(() => Mailer.send({
-    to: createdAccount.email,
-    subject: 'FastTrac Application Approved',
-    text: emailContent,
-    html: emailContent })
-  )
-  .then(() => res.send(surveyResponse))
-  .catch(error => next(error));
+  .then(() => {
+    Mailer.send({
+      to: createdAccount.email,
+      subject: 'FastTrac Application Approved',
+      text: emailContent,
+      html: emailContent
+    });
+
+    return surveyResponse;
+  });
 };
 
 const rejectResponse = (req, res, next) => {

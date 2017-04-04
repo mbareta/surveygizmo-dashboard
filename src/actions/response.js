@@ -39,10 +39,14 @@ class ResponseActions {
 
   approveResponse(response, emailContent) {
     const xhr = new XMLHttpRequest(); // eslint-disable-line
-    const data = { emailContent };
+    const data = {
+      email: response.questions['Submitter Email'],
+      emailContent
+    };
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
+        debugger; // eslint-disable-line
         const surveyResponse = JSON.parse(xhr.responseText);
 
 
