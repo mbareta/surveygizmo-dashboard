@@ -12,6 +12,21 @@ const surveyResponseSchema = mongoose.Schema({
   }
 });
 
+surveyResponseSchema.methods.setAccountCreated = function () {
+  this.status.accountCreated = new Date();
+  return this.save();
+};
+
+surveyResponseSchema.methods.setGrantedCcxRole = function () {
+  this.status.grantedCcxRole = new Date();
+  return this.save();
+};
+
+surveyResponseSchema.methods.setSentPasswordReset = function () {
+  this.status.sentPasswordReset = new Date();
+  return this.save();
+};
+
 surveyResponseSchema.statics.getByEmail = function (email) {
   return this.findOne({ 'questions.Submitter Email': email });
 };

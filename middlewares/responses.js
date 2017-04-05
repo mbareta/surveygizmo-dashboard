@@ -45,27 +45,22 @@ const doApproveResponse = (emailContent, responseId, token) => {
     createdAccount = account;
 
     if (isCreated) {
-      surveyResponse.status.accountCreated = new Date();
-      surveyResponse.save()
-      .then(() => EdxApi.sendResetPasswordRequest(createdAccount))
-      .then(() => {
-        surveyResponse.status.sentPasswordReset = new Date();
-        surveyResponse.save();
-      })
-      .then(() => {
+      surveyResponse.setAccountCreated()
+      .then(() => Promise.all([
+        EdxApi.sendResetPasswordRequest(createdAccount),
+        surveyResponse.setSentPasswordReset(),
         Mailer.send({
           to: createdAccount.email,
           subject: 'FastTrac Application Approved',
           text: emailContent,
           html: emailContent
-        });
-      });
+        })
+      ]));
     }
   })
   .then(() => EdxApi.grantCcxRole(createdAccount, token))
   .then(() => {
-    surveyResponse.status.grantedCcxRole = new Date();
-    surveyResponse.save();
+    surveyResponse.setGrantedCcxRole();
 
     return surveyResponse;
   });
