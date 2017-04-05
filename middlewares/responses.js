@@ -13,16 +13,16 @@ const approveResponse = (req, res, next) => {
       return res.send(surveyResponse);
     }
 
-    const emailContent = req.body.emailContent;
-    const responseId = req.params.responseId;
+    const { emailContent } = req.body;
+    const { responseId } = req.params;
+
     return doApproveResponse(emailContent, responseId, token)
     .then(response => res.send(response));
   })
   .catch(error => next(error));
 };
 
-const isApprovedOrRejected = response =>
-  response &&
+const isApprovedOrRejected = response => response &&
   (response.status.accountCreated &&
   response.status.sentPasswordReset &&
   response.status.grantedCcxRole ||
@@ -52,28 +52,32 @@ const doApproveResponse = (emailContent, responseId, token) => {
     surveyResponse.save();
   })
   .then(() => EdxApi.createAccount(surveyResponse.questions))
-  .then(account => {
+  .then(({ isCreated, form: account }) => {
     createdAccount = account;
-    surveyResponse.status.accountCreated = new Date();
-    surveyResponse.save();
+
+    if (isCreated) {
+      surveyResponse.status.accountCreated = new Date();
+      surveyResponse.save()
+      .then(() => EdxApi.sendResetPasswordRequest(createdAccount))
+      .then(() => {
+        surveyResponse.status.sentPasswordReset = new Date();
+        surveyResponse.save();
+      })
+      .then(() => {
+        Mailer.send({
+          to: createdAccount.email,
+          subject: 'FastTrac Application Approved',
+          text: emailContent,
+          html: emailContent
+        });
+      });
+    }
   })
   .then(() => EdxApi.grantCcxRole(createdAccount, token))
-  .then(() => {
+  .then(response => {
+    console.log(response);
     surveyResponse.status.grantedCcxRole = new Date();
     surveyResponse.save();
-  })
-  .then(() => EdxApi.sendResetPasswordRequest(createdAccount))
-  .then(() => {
-    surveyResponse.status.sentPasswordReset = new Date();
-    surveyResponse.save();
-  })
-  .then(() => {
-    Mailer.send({
-      to: createdAccount.email,
-      subject: 'FastTrac Application Approved',
-      text: emailContent,
-      html: emailContent
-    });
 
     return surveyResponse;
   });
