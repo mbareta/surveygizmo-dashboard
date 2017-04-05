@@ -31,17 +31,7 @@ const isApprovedOrRejected = ({ status }) => status &&
 const doApproveResponse = (emailContent, responseId, token) => {
   let createdAccount;
 
-  const surveyResponse = new SurveyResponse({
-    responseId: 0,
-    submittedAt: '',
-    questions: {},
-    status: {
-      accountCreated: null,
-      grantedCcxRole: null,
-      sentPasswordReset: null,
-      rejected: null
-    }
-  });
+  const surveyResponse = new SurveyResponse();
 
   return surveyGizmo.getResponseData(responseId)
   .then(response => {
