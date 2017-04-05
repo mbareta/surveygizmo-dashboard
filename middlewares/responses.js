@@ -9,11 +9,8 @@ const approveResponse = (req, res, next) => {
 
   SurveyResponse.findOne({ 'questions.Submitter Email': req.body.email })
   .then(surveyResponse => {
-    if (surveyResponse) {
-      const response = surveyResponse.toObject();
-      const account = { username: response.questions['Full name'].replace(/ /g, '') };
-      return EdxApi.grantCcxRole(account, token)
-      .then(() => res.send(response));
+    if (isApprovedOrRejected(surveyResponse)) {
+      return res.send(surveyResponse);
     }
 
     const emailContent = req.body.emailContent;
@@ -24,8 +21,15 @@ const approveResponse = (req, res, next) => {
   .catch(error => next(error));
 };
 
+const isApprovedOrRejected = response =>
+  response &&
+  (response.status.accountCreated &&
+  response.status.sentPasswordReset &&
+  response.status.grantedCcxRole ||
+  response.status.rejected);
+
+
 const doApproveResponse = (emailContent, responseId, token) => {
-  let response;
   let createdAccount;
 
   const surveyResponse = new SurveyResponse({
@@ -41,14 +45,13 @@ const doApproveResponse = (emailContent, responseId, token) => {
   });
 
   return surveyGizmo.getResponseData(responseId)
-  .then(responseData => {
-    response = responseData;
+  .then(response => {
     surveyResponse.responseId = response.id;
     surveyResponse.submittedAt = response.submittedAt;
     surveyResponse.questions = response.questions;
     surveyResponse.save();
   })
-  .then(() => EdxApi.createAccount(response.questions))
+  .then(() => EdxApi.createAccount(surveyResponse.questions))
   .then(account => {
     createdAccount = account;
     surveyResponse.status.accountCreated = new Date();
