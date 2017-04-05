@@ -12,18 +12,38 @@ const surveyResponseSchema = mongoose.Schema({
   }
 });
 
+surveyResponseSchema.methods.setData = function ({ id, submittedAt, questions }) {
+  this.responseId = id;
+  this.submittedAt = submittedAt;
+  this.questions = questions;
+  return this.save();
+};
+
 surveyResponseSchema.methods.setAccountCreated = function () {
-  this.status.accountCreated = new Date();
+  if (!this.status.accountCreated) {
+    this.status.accountCreated = new Date();
+  }
   return this.save();
 };
 
 surveyResponseSchema.methods.setGrantedCcxRole = function () {
-  this.status.grantedCcxRole = new Date();
+  if (!this.status.grantedCcxRole) {
+    this.status.grantedCcxRole = new Date();
+  }
   return this.save();
 };
 
 surveyResponseSchema.methods.setSentPasswordReset = function () {
-  this.status.sentPasswordReset = new Date();
+  if (!this.status.sentPasswordReset) {
+    this.status.sentPasswordReset = new Date();
+  }
+  return this.save();
+};
+
+surveyResponseSchema.methods.setRejected = function () {
+  if (!this.status.rejected) {
+    this.status.rejected = new Date();
+  }
   return this.save();
 };
 

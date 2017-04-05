@@ -29,74 +29,54 @@ const isApprovedOrRejected = ({ status }) => status &&
 
 
 const doApproveResponse = (emailContent, responseId, token) => {
-  let createdAccount;
-
+  let account;
   const surveyResponse = new SurveyResponse();
 
   return surveyGizmo.getResponseData(responseId)
-  .then(response => {
-    surveyResponse.responseId = response.id;
-    surveyResponse.submittedAt = response.submittedAt;
-    surveyResponse.questions = response.questions;
-    surveyResponse.save();
-  })
+  .then(data => surveyResponse.setData(data))
+  .then(() => surveyResponse.setAccountCreated())
   .then(() => EdxApi.createAccount(surveyResponse.questions))
-  .then(({ isCreated, form: account }) => {
-    createdAccount = account;
+  .then(({ isCreated, form }) => {
+    account = form;
 
     if (isCreated) {
-      surveyResponse.setAccountCreated()
-      .then(() => Promise.all([
-        EdxApi.sendResetPasswordRequest(createdAccount),
-        surveyResponse.setSentPasswordReset(),
-        Mailer.send({
-          to: createdAccount.email,
-          subject: 'FastTrac Application Approved',
-          text: emailContent,
-          html: emailContent
-        })
-      ]));
+      sendResetPasswordEmail(
+        account,
+        emailContent
+      )
+      .then(() => surveyResponse.setSentPasswordReset());
     }
   })
-  .then(() => EdxApi.grantCcxRole(createdAccount, token))
-  .then(() => {
-    surveyResponse.setGrantedCcxRole();
-
-    return surveyResponse;
-  });
+  .then(() => EdxApi.grantCcxRole(account, token))
+  .then(() => surveyResponse.setGrantedCcxRole())
+  .then(() => surveyResponse);
 };
+
+const sendResetPasswordEmail = (account, content) =>
+  Promise.all([
+    EdxApi.sendResetPasswordRequest(account),
+    Mailer.send({
+      to: account.email,
+      subject: 'FastTrac Application Approved',
+      text: content,
+      html: content
+    })
+  ]);
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
-  const surveyResponse = new SurveyResponse({
-    responseId: 0,
-    submittedAt: '',
-    questions: {},
-    status: {
-      accountCreated: null,
-      grantedCcxRole: null,
-      sentPasswordReset: null,
-      rejected: new Date()
-    }
-  });
+  const surveyResponse = new SurveyResponse();
 
   surveyGizmo.getResponseData(req.params.responseId)
-  .then(response => {
-    surveyResponse.responseId = response.id;
-    surveyResponse.submittedAt = response.submittedAt;
-    surveyResponse.questions = response.questions;
-
-    return Mailer.send({
-      to: email,
-      subject: 'FastTrac Application Rejected',
-      text: emailContent,
-      html: emailContent
-    });
-  })
-  .then(() => {
-    surveyResponse.save();
-    res.send(surveyResponse);
-  })
+  .then(response => surveyResponse.setData(response))
+  .then(() => surveyResponse.setRejected())
+  .then(() => Mailer.send({
+    to: email,
+    subject: 'FastTrac Application Rejected',
+    text: emailContent,
+    html: emailContent
+  }))
+  .then(() => res.send(surveyResponse))
   .catch(error => next(error));
 };
 
