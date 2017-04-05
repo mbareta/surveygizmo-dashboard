@@ -46,7 +46,6 @@ class ResponseActions {
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        debugger; // eslint-disable-line
         const surveyResponse = JSON.parse(xhr.responseText);
 
 

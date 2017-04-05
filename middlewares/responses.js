@@ -5,28 +5,27 @@ const Mailer = require('../lib/mailer');
 const SurveyResponse = require('../models/surveyResponse');
 
 const approveResponse = (req, res, next) => {
-  const token = req.session.token.access_token;
+  const { access_token: accessToken } = req.session.token;
+  const { email, emailContent } = req.body;
+  const { responseId } = req.params;
 
-  SurveyResponse.findOne({ 'questions.Submitter Email': req.body.email })
+  SurveyResponse.getByEmail(email)
   .then(surveyResponse => {
-    if (isApprovedOrRejected(surveyResponse)) {
+    if (surveyResponse && isApprovedOrRejected(surveyResponse)) {
       return res.send(surveyResponse);
     }
 
-    const { emailContent } = req.body;
-    const { responseId } = req.params;
-
-    return doApproveResponse(emailContent, responseId, token)
+    return doApproveResponse(emailContent, responseId, accessToken)
     .then(response => res.send(response));
   })
   .catch(error => next(error));
 };
 
-const isApprovedOrRejected = response => response &&
-  (response.status.accountCreated &&
-  response.status.sentPasswordReset &&
-  response.status.grantedCcxRole ||
-  response.status.rejected);
+const isApprovedOrRejected = ({ status }) => status &&
+  (status.accountCreated &&
+  status.sentPasswordReset &&
+  status.grantedCcxRole ||
+  status.rejected);
 
 
 const doApproveResponse = (emailContent, responseId, token) => {
@@ -74,8 +73,7 @@ const doApproveResponse = (emailContent, responseId, token) => {
     }
   })
   .then(() => EdxApi.grantCcxRole(createdAccount, token))
-  .then(response => {
-    console.log(response);
+  .then(() => {
     surveyResponse.status.grantedCcxRole = new Date();
     surveyResponse.save();
 

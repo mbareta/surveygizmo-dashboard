@@ -12,6 +12,10 @@ const surveyResponseSchema = mongoose.Schema({
   }
 });
 
+surveyResponseSchema.statics.getByEmail = function (email) {
+  return this.findOne({ 'questions.Submitter Email': email });
+};
+
 const SurveyResponse = mongoose.model('SurveyResponse', surveyResponseSchema);
 
 module.exports = SurveyResponse;
