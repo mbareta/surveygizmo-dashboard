@@ -1,3 +1,4 @@
+/* eslint-disable */
 const mongoose = require('../lib/mongoose');
 
 const surveyResponseSchema = mongoose.Schema({

@@ -1,6 +1,9 @@
+/* eslint-disable */
+const Promise = require('bluebird');
 const surveyGizmo = require('../lib/SurveyGizmo');
 const EdxApi = require('../lib/EdxApi');
 const Mailer = require('../lib/mailer');
+const { UserDataException } = require('../lib/customExceptions');
 
 const SurveyResponse = require('../models/surveyResponse');
 
@@ -36,6 +39,10 @@ const doApproveResponse = (emailContent, responseId, token) => {
   .then(data => surveyResponse.setData(data))
   .then(() => surveyResponse.setAccountCreated())
   .then(() => EdxApi.createAccount(surveyResponse.questions))
+  .catch(UserDataException, exception => {
+    console.log(exception.message)
+    throw exception;
+  })
   .then(({ isCreated, form }) => {
     account = form;
 
