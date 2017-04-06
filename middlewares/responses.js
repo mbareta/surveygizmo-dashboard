@@ -18,7 +18,7 @@ const approveResponse = (req, res, next) => {
 
     return doApproveResponse(emailContent, responseId, accessToken)
     .catch(UserDataException, exception => {
-      res.status(400).send(exception);
+      res.status(400).send(exception.message);
     })
     .then(response => res.send(response));
   })

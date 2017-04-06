@@ -1,5 +1,6 @@
 const dispatcher = require('../dispatcher');
 const responseConstants = require('../constants/response');
+const modalConstants = require('../constants/modal');
 
 class ResponseActions {
   loadResponses(pageIndex = 1) {
@@ -52,6 +53,17 @@ class ResponseActions {
         dispatcher.handleAction({
           actionType: responseConstants.APPROVE_RESPONSE,
           data: surveyResponse
+        });
+      }
+      else if (xhr.readyState === 4 && xhr.status === 400) {
+        debugger;
+        const error = xhr.responseText;
+
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content: error,
+          }
         });
       }
       else if (xhr.readyState === 4 && xhr.status !== 200) {
