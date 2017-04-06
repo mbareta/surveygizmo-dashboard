@@ -60,7 +60,6 @@ dispatcher.register(payload => {
       modalStore.showErrorModal(action.data);
       break;
     case HIDE_ERROR_MODAL:
-      debugger;
       modalStore.hideErrorModal();
       break;
 

@@ -13,7 +13,6 @@ class ModalActions {
   }
 
   hideErrorModal() {
-    debugger;
     dispatcher.handleAction({
       actionType: HIDE_ERROR_MODAL,
       data: null

@@ -26,7 +26,6 @@ class ErrorModal extends PureComponent {
   }
 
   onStoreChange() {
-    debugger;
     const { isOpen, content } = modalStore.getErrorModalData();
     this.setState({
       isOpen,
@@ -36,8 +35,7 @@ class ErrorModal extends PureComponent {
 
   render() {
     const { isOpen, content } = this.state;
-    debugger;
-    const messages = content && content.split(/\n/g).map(message => <p>{message}</p>)
+    const messages = content && content.split(/\n/g).map(message => <p>{message}</p>);
 
     return (
       <Modal

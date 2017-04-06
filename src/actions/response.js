@@ -56,7 +56,6 @@ class ResponseActions {
         });
       }
       else if (xhr.readyState === 4 && xhr.status === 400) {
-        debugger;
         const error = xhr.responseText;
 
         dispatcher.handleAction({
