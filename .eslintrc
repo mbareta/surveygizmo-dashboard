@@ -7,7 +7,6 @@
     "strict": "off",
     "no-use-before-define": "off",
     "class-methods-use-this": "off",
-    "no-mixed-operators": "off",
-    "no-debugger": "off"
+    "no-mixed-operators": "off"
   }
 }
