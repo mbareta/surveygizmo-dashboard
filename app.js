@@ -7,13 +7,13 @@ const bodyParser = require('body-parser');
 const compileSass = require('express-compile-sass');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
+global.Promise = require('bluebird');
 const config = require('./config/main');
 const { skipWhitelistedRoutes, getEmailFromSession } = require('./lib/helpers');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const responses = require('./routes/responses');
 const { requiresStaffRole } = require('./middlewares/auth');
-global.Promise = require('bluebird');
 
 const app = express();
 
