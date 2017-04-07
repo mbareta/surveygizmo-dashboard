@@ -1,9 +1,13 @@
 const React = require('react');
 const Modal = require('react-modal');
+const hasha = require('hasha');
 const modalStore = require('../../../../stores/modal');
 const { hideErrorModal } = require('../../../../actions/modal');
 
 const { PureComponent } = React;
+
+const hashOptions = { algorithm: 'md5' };
+const hash = input => hasha(input, hashOptions);
 
 class ErrorModal extends PureComponent {
   constructor() {
@@ -35,7 +39,7 @@ class ErrorModal extends PureComponent {
 
   render() {
     const { isOpen, content } = this.state;
-    const messages = content && content.split(/\n/g).map(message => <p>{message}</p>);
+    const messages = content && content.split(/\n/g).map(message => <p key={`message-${hash(message)}`}>{message}</p>);
 
     return (
       <Modal
