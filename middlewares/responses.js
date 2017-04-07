@@ -16,6 +16,10 @@ const approveResponse = (req, res, next) => {
       return res.send(surveyResponse);
     }
 
+    /**
+     * Catch {UserDataException} if doApproveResponse throws one,
+     * otherwise continue with promise chain
+     */
     return doApproveResponse(emailContent, responseId, accessToken)
     .catch(UserDataException, exception => {
       res.status(400).send(exception.message);
@@ -31,7 +35,22 @@ const isApprovedOrRejected = ({ status }) => status &&
   status.grantedCcxRole ||
   status.rejected);
 
-
+/**
+ * Function does all the approval logic through the chain of promises.
+ *
+ * Once the response data is fetched from db,
+ * createAccount is called from EdxApi and response status is updated in db.
+ *
+ * Return value of createAccount is destructured into:
+ * {isCreated} - boolean indicating whether account was created in edX or already existed
+ * {form} - holds account info
+ * Only if account was created reset password email is sent
+ *
+ * At the end, user is granted ccx role
+ * @param {string} emailContent for email sent on response approval
+ * @param {number} responseId used to fetch response data from db
+ * @param {string} token fetched from session, used to login current user into edX
+ */
 const doApproveResponse = (emailContent, responseId, token) => {
   let account;
   const surveyResponse = new SurveyResponse();
