@@ -39,15 +39,21 @@ class ErrorModal extends PureComponent {
 
   render() {
     const { isOpen, content } = this.state;
-    const messages = content && content.split(/\n/g).map(message => <p key={`message-${hash(message)}`}>{message}</p>);
+    const messages = content && content.split(/\n/g)
+      .map(message => (
+        <p key={`message-${hash(message)}`}>
+          {message}
+        </p>
+      ));
 
     return (
       <Modal
         isOpen={isOpen}
         onRequestClose={hideErrorModal}
         contentLabel="Error modal"
+        className="error-modal"
       >
-        {messages}
+        <div className="error-messages">{messages}</div>
       </Modal>
     );
   }
