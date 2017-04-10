@@ -166,6 +166,10 @@ table.form-responses {
     outline: 0 none;
     color: white;
 
+    &:disabled,
+    &[disabled] {
+      opacity: .6;
+    }
     &:hover {
       opacity: .7;
     }
