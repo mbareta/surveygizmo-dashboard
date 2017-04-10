@@ -11,14 +11,12 @@ const FormResponseDetails = ({ showApproveModal, showRejectModal }) => {
   const isApprovedOrRejected = response.statusString === 'Approved' || response.statusString === 'Rejected';
   const noop = Function.prototype;
 
-  let approveButton;
-  let rejectButton;
   if (isApprovedOrRejected) {
-    approveButton = <button onClick={noop} disabled>Approve</button>;
-    rejectButton = <button onClick={noop} disabled>Reject</button>;
+    var approveButton = <button onClick={noop} disabled>Approve</button>;
+    var rejectButton = <button onClick={noop} disabled>Reject</button>;
   } else {
-    approveButton = <button onClick={() => showApproveModal(response)}>Approve</button>;
-    rejectButton = <button onClick={() => showRejectModal(response)}>Reject</button>;
+    var approveButton = <button onClick={() => showApproveModal(response)}>Approve</button>;
+    var rejectButton = <button onClick={() => showRejectModal(response)}>Reject</button>;
   }
 
   return (
