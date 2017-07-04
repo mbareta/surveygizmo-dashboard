@@ -97,11 +97,27 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
-  const surveyResponse = new SurveyResponse();
+  let data;
+  let surveyResponse;
 
-  surveyGizmo
+  return surveyGizmo
     .getResponseData(req.params.responseId)
-    .then(response => surveyResponse.setData(response))
+    .then(responseData => {
+      data = responseData;
+    })
+    .then(() =>
+      SurveyResponse.findOne({
+        'questions.Submitter Email': data.questions['Submitter Email']
+      })
+    )
+    .then(response => {
+      if (!response) {
+        surveyResponse = new SurveyResponse();
+      } else {
+        surveyResponse = response;
+      }
+    })
+    .then(() => surveyResponse.setData(data))
     .then(() => surveyResponse.setRejected())
     .then(() =>
       Mailer.send({
