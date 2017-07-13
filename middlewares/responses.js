@@ -87,8 +87,8 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
       }
       // don't send password request email, but record that we passed this step
       // so we can track response status better
-      return surveyResponse.setSentPasswordReset()
-      .then(() => sendResetPasswordEmail(account, emailContent));
+      return sendResetPasswordEmail(account, emailContent)
+      .then(() => surveyResponse.setSentPasswordReset());
     })
     .then(() => surveyResponse.setAccountCreated())
     .then(() => EdxApi.enrollUserIntoFacilitatorCourse(req, account))
