@@ -12,7 +12,14 @@ const approveResponse = (req, res, next) => {
   SurveyResponse.getByEmail(email)
     .then(surveyResponse => {
       if (surveyResponse && isApprovedOrRejected(surveyResponse)) {
-        return res.send(surveyResponse);
+        return Mailer.send({
+          to: email,
+          subject: 'Kauffman FastTrac Affiliate Approval',
+          text: emailContent,
+          html: emailContent
+        })
+        .then(() => res.send(surveyResponse))
+        .catch(err => res.status(500).send(err));
       }
 
       /**
@@ -23,7 +30,8 @@ const approveResponse = (req, res, next) => {
         .catch(UserDataException, exception => {
           res.status(400).send(exception.message);
         })
-        .then(response => res.send(response));
+        .then(response => res.send(response))
+        .catch(error => res.status(500).send(error));
     })
     .catch(error => next(error));
 };
@@ -76,29 +84,18 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
     .catch(UserDataException, exception => {
       throw exception;
     })
-    .then(({ isCreated, form }) => {
+    .then(({ isCreated, form }) => { // eslint-disable-line consistent-return
       account = form;
 
       if (isCreated) {
         return EdxApi.sendResetPasswordRequest(account)
         .then(() => surveyResponse.setSentPasswordReset());
       }
-      // don't send password request email, but record that we passed this step
-      // so we can track response status better
-      return sendResetPasswordEmail(account, emailContent)
-      .then(() => surveyResponse.setSentPasswordReset());
     })
     .then(() => surveyResponse.setAccountCreated())
     .then(() => EdxApi.createAffiliateEntity(req, surveyResponse.questions))
     .then(() => surveyResponse);
 };
-
-const sendResetPasswordEmail = (account, content) => Mailer.send({
-  to: account.email,
-  subject: 'Kauffman FastTrac Affiliate Approval',
-  text: content,
-  html: content
-});
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
