@@ -12,14 +12,7 @@ const approveResponse = (req, res, next) => {
   SurveyResponse.getByEmail(email)
     .then(surveyResponse => {
       if (surveyResponse && isApprovedOrRejected(surveyResponse)) {
-        return Mailer.send({
-          to: email,
-          subject: 'Kauffman FastTrac Affiliate Approval',
-          text: emailContent,
-          html: emailContent
-        })
-        .then(() => res.send(surveyResponse))
-        .catch(err => res.status(500).send(err));
+        return res.send(surveyResponse);
       }
 
       /**
@@ -89,13 +82,23 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
 
       if (isCreated) {
         return EdxApi.sendResetPasswordRequest(account)
+        .then(() => sendApprovalEmail(account.email, emailContent))
         .then(() => surveyResponse.setSentPasswordReset());
       }
+
+      return sendApprovalEmail(account.email, emailContent);
     })
     .then(() => surveyResponse.setAccountCreated())
     .then(() => EdxApi.createAffiliateEntity(req, surveyResponse.questions))
     .then(() => surveyResponse);
 };
+
+const sendApprovalEmail = (email, content) => Mailer.send({
+  to: email,
+  subject: 'Kauffman FastTrac Affiliate Approval',
+  text: content,
+  html: content
+})
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
