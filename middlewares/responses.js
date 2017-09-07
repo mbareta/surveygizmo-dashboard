@@ -1,3 +1,4 @@
+const { auth0 } = require('../config/main');
 const surveyGizmo = require('../lib/SurveyGizmo');
 const EdxApi = require('../lib/EdxApi');
 const Auth0ApiClient = require('../lib/auth0Api');
@@ -5,7 +6,7 @@ const Mailer = require('../lib/mailer');
 const { UserDataException } = require('../lib/customExceptions');
 const SurveyResponse = require('../models/surveyResponse');
 
-const authApiClient = Auth0ApiClient();
+const authApiClient = Auth0ApiClient(auth0);
 
 const approveResponse = (req, res, next) => {
   const { access_token: accessToken } = req.session.token;
