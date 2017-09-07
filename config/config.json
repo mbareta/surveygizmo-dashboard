@@ -18,6 +18,13 @@
       "authorizePath": "/oauth2/authorize",
       "tokenPath": "/oauth2/access_token/"
     },
+    "auth0": {
+      "apiUrl": "https://miro24.eu.auth0.com/api/v2",
+      "clientId": "iUcKzz9dKF3MIQllhF6H5f6LCb5K0daF",
+      "clientSecret": "_ibY3Vgy9lFB_NLCfIDy0_17oZo4DfO8XXIawHXyG4mCsedbrvCjEifCAWQjzujw",
+      "connection": "Username-Password-Authentication",
+      "connection_id": "con_8kEWS7UQbxq2DqJt"
+    },
     "mail": {
       "host": "192.168.33.10",
       "port": 25,
@@ -48,6 +55,13 @@
       "tokenHost": "http://54.208.243.8",
       "authorizePath": "/oauth2/authorize",
       "tokenPath": "/oauth2/access_token"
+    },
+    "auth0": {
+      "apiUrl": "https://miro24.eu.auth0.com/api/v2",
+      "clientId": "iUcKzz9dKF3MIQllhF6H5f6LCb5K0daF",
+      "clientSecret": "_ibY3Vgy9lFB_NLCfIDy0_17oZo4DfO8XXIawHXyG4mCsedbrvCjEifCAWQjzujw",
+      "connection": "Username-Password-Authentication",
+      "connection_id": "con_8kEWS7UQbxq2DqJt"
     },
     "mail": {
       "host": "localhost",

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const env = require('./config.json');
 
 module.exports = (() => {
