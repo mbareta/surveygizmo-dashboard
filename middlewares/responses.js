@@ -34,7 +34,10 @@ const approveResponse = (req, res, next) => {
 };
 
 const isApprovedOrRejected = ({ status }) =>
-  status && ((status.accountCreated && status.sentPasswordReset) || status.rejected);
+  status &&
+  ((status.accountCreated &&
+    status.sentPasswordReset) ||
+    status.rejected);
 
 /**
  * Function does all the approval logic through the chain of promises.
@@ -65,7 +68,7 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
       return authApiClient.createUser(submitterEmail, 'passverd');
     })
     .then(() => SurveyResponse.findOne({
-      'questions.Submitter Email': data.questions['Submitter Email'],
+      'questions.Submitter Email': data.questions['Submitter Email']
     }))
     .then(response => {
       if (!response) {
@@ -116,7 +119,7 @@ const rejectResponse = (req, res, next) => {
     })
     .then(() =>
       SurveyResponse.findOne({
-        'questions.Submitter Email': data.questions['Submitter Email'],
+        'questions.Submitter Email': data.questions['Submitter Email']
       }),
     )
     .then(response => {
@@ -133,8 +136,8 @@ const rejectResponse = (req, res, next) => {
         to: email,
         subject: 'FastTrac Application Rejected',
         text: emailContent,
-        html: emailContent,
-      }),
+        html: emailContent
+      })
     )
     .then(() => res.send(surveyResponse))
     .catch(error => next(error));
