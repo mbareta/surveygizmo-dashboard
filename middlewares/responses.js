@@ -7,6 +7,7 @@ const { UserDataException } = require('../lib/customExceptions');
 const SurveyResponse = require('../models/surveyResponse');
 
 const authApiClient = Auth0ApiClient(auth0);
+const resetPasswordEmail = 'Please reset your Kauffman FastTrac account by clicking the link: ';
 
 const approveResponse = (req, res, next) => {
   const { access_token: accessToken } = req.session.token;
@@ -82,12 +83,14 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
     .catch(UserDataException, exception => {
       throw exception;
     })
-    .then(({ isCreated, form }) => {
+    .then(async ({ isCreated, form }) => {
       // eslint-disable-line consistent-return
       account = form;
 
       if (isCreated) {
-        return EdxApi.sendResetPasswordRequest(account)
+        const resetPasswordLink = await authApiClient.getResetPasswordLink(account.email);
+        const resetPasswordEmailContent = `${resetPasswordEmail} ${resetPasswordLink}`;
+        return sendResetPasswordEmail(account.email, resetPasswordEmailContent)
           .then(() => sendApprovalEmail(account.email, emailContent))
           .then(() => surveyResponse.setSentPasswordReset());
       }
@@ -98,6 +101,14 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
     .then(() => EdxApi.createAffiliateEntity(req, surveyResponse.questions))
     .then(() => surveyResponse);
 };
+
+const sendResetPasswordEmail = (email, content) =>
+  Mailer.send({
+    to: email,
+    subject: 'Password reset link for Kauffman FastTrac account',
+    text: content,
+    html: content
+  });
 
 const sendApprovalEmail = (email, content) =>
   Mailer.send({
