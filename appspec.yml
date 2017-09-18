@@ -15,13 +15,13 @@ hooks:
   ApplicationStop:
     # - location: scripts/deregister_from_elb.sh
     #   timeout: 300
-    - location: /opt/fast-deploy/services/scripts/application_stop.sh
+    - location: scripts/application_stop.sh
       timeout: 300
-    - location: /opt/fast-deploy/services/scripts/wait_for_bootstrap.sh
+    - location: scripts/wait_for_bootstrap.sh
       runas: root
   ApplicationStart:
-    - location: /opt/fast-deploy/services/scripts/application_start.sh
+    - location: scripts/application_start.sh
       timeout: 600
-      runas: fast-deploy
+      runas: root
     # - location: scripts/register_with_elb.sh
     #   timeout: 120
