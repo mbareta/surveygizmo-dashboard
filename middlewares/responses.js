@@ -1,8 +1,13 @@
+const { auth0 } = require('../config/main');
 const surveyGizmo = require('../lib/SurveyGizmo');
 const EdxApi = require('../lib/EdxApi');
+const Auth0ApiClient = require('../lib/auth0Api');
 const Mailer = require('../lib/mailer');
 const { UserDataException } = require('../lib/customExceptions');
 const SurveyResponse = require('../models/surveyResponse');
+
+const authApiClient = Auth0ApiClient(auth0);
+const resetPasswordEmail = 'Please reset your Kauffman FastTrac account by clicking the link: ';
 
 const approveResponse = (req, res, next) => {
   const { access_token: accessToken } = req.session.token;
@@ -59,12 +64,13 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
     .getResponseData(responseId)
     .then(responseData => {
       data = responseData;
+      const submitterEmail = data.questions['Submitter Email'];
+
+      return authApiClient.createUser(submitterEmail, 'passverd');
     })
-    .then(() =>
-      SurveyResponse.findOne({
-        'questions.Submitter Email': data.questions['Submitter Email']
-      })
-    )
+    .then(() => SurveyResponse.findOne({
+      'questions.Submitter Email': data.questions['Submitter Email']
+    }))
     .then(response => {
       if (!response) {
         surveyResponse = new SurveyResponse();
@@ -77,13 +83,16 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
     .catch(UserDataException, exception => {
       throw exception;
     })
-    .then(({ isCreated, form }) => { // eslint-disable-line consistent-return
+    .then(async ({ isCreated, form }) => {
+      // eslint-disable-line consistent-return
       account = form;
 
       if (isCreated) {
-        return EdxApi.sendResetPasswordRequest(account)
-        .then(() => sendApprovalEmail(account.email, emailContent))
-        .then(() => surveyResponse.setSentPasswordReset());
+        const resetPasswordLink = await authApiClient.getResetPasswordLink(account.email);
+        const resetPasswordEmailContent = `${resetPasswordEmail} ${resetPasswordLink}`;
+        return sendResetPasswordEmail(account.email, resetPasswordEmailContent)
+          .then(() => sendApprovalEmail(account.email, emailContent))
+          .then(() => surveyResponse.setSentPasswordReset());
       }
 
       return sendApprovalEmail(account.email, emailContent);
@@ -93,12 +102,21 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
     .then(() => surveyResponse);
 };
 
-const sendApprovalEmail = (email, content) => Mailer.send({
-  to: email,
-  subject: 'Kauffman FastTrac Affiliate Approval',
-  text: content,
-  html: content
-})
+const sendResetPasswordEmail = (email, content) =>
+  Mailer.send({
+    to: email,
+    subject: 'Password reset link for Kauffman FastTrac account',
+    text: content,
+    html: content
+  });
+
+const sendApprovalEmail = (email, content) =>
+  Mailer.send({
+    to: email,
+    subject: 'Kauffman FastTrac Affiliate Approval',
+    text: content,
+    html: content,
+  });
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
@@ -113,7 +131,7 @@ const rejectResponse = (req, res, next) => {
     .then(() =>
       SurveyResponse.findOne({
         'questions.Submitter Email': data.questions['Submitter Email']
-      })
+      }),
     )
     .then(response => {
       if (!response) {
