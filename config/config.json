@@ -61,6 +61,6 @@
     "cookieSecret": "surveygizmo",
     "cookieMaxAge": 60000,
     "whitelistRoutes": ["/users/auth", "/users/login"],
-    "redisUrl": "//localhost:6379"
+    "redisUrl": "//production-redis:6379"
   }
 }
