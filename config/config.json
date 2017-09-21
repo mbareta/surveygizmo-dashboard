@@ -33,12 +33,12 @@
   },
   "production": {
     "database": {
-      "host": "localhost",
+      "host": "production-mongo",
       "port": "27017",
       "db": "surveygizmo"
     },
-    "baseUrl": "http://54.208.243.8:3001",
-    "lmsUrl": "http://54.208.243.8",
+    "baseUrl": "fasttrac-production-elb-gizmo-1478345931.us-west-2.elb.amazonaws.com",
+    "lmsUrl": "http://fasttrac-production-elb-edx-738763844.us-west-2.elb.amazonaws.com",
     "sgUrl": "https://restapi.surveygizmo.com/v4/survey",
     "sgSurveyId": 3392617,
     "client": {
@@ -46,7 +46,7 @@
       "secret": "sg-secret"
     },
     "auth": {
-      "tokenHost": "http://54.208.243.8",
+      "tokenHost": "http://fasttrac-production-elb-edx-738763844.us-west-2.elb.amazonaws.com/",
       "authorizePath": "/oauth2/authorize",
       "tokenPath": "/oauth2/access_token"
     },
