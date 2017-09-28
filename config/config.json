@@ -37,8 +37,8 @@
       "port": "27017",
       "db": "surveygizmo"
     },
-    "baseUrl": "fasttrac-production-elb-gizmo-1478345931.us-west-2.elb.amazonaws.com",
-    "lmsUrl": "http://fasttrac-production-elb-edx-738763844.us-west-2.elb.amazonaws.com",
+    "baseUrl": "https://workspace.fasttrac.org",
+    "lmsUrl": "https://courses.fasttrac.org",
     "sgUrl": "https://restapi.surveygizmo.com/v4/survey",
     "sgSurveyId": 3392617,
     "client": {
@@ -46,7 +46,7 @@
       "secret": "sg-secret"
     },
     "auth": {
-      "tokenHost": "http://fasttrac-production-elb-edx-738763844.us-west-2.elb.amazonaws.com/",
+      "tokenHost": "https://courses.fasttrac.org",
       "authorizePath": "/oauth2/authorize",
       "tokenPath": "/oauth2/access_token"
     },
