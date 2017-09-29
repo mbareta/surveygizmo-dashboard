@@ -37,7 +37,7 @@
       "port": "27017",
       "db": "surveygizmo"
     },
-    "baseUrl": "https://affiliates.fasttrac.org",
+    "baseUrl": "https://affiliateapps.fasttrac.org",
     "lmsUrl": "https://learn.fasttrac.org",
     "sgUrl": "https://restapi.surveygizmo.com/v4/survey",
     "sgSurveyId": 3392617,
