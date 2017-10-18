@@ -86,7 +86,8 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
         .then(() => surveyResponse.setSentPasswordReset());
       }
 
-      return sendApprovalEmail(account.email, emailContent);
+      return sendApprovalEmail(account.email, emailContent)
+      .then(() => surveyResponse.setSentPasswordReset());
     })
     .then(() => surveyResponse.setAccountCreated())
     .then(() => EdxApi.createAffiliateEntity(req, surveyResponse.questions))
@@ -98,7 +99,7 @@ const sendApprovalEmail = (email, content) => Mailer.send({
   subject: 'Kauffman FastTrac Affiliate Approval',
   text: content,
   html: content
-})
+});
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
