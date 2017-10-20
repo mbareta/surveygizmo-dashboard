@@ -12,7 +12,7 @@ class ResponseActions {
 
         dispatcher.handleAction({
           actionType: responseConstants.SET_RESPONSES,
-          data: responses,
+          data: responses
         });
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         throw new Error('Fetching responses failed');
@@ -26,14 +26,14 @@ class ResponseActions {
   viewResponse(response) {
     dispatcher.handleAction({
       actionType: responseConstants.VIEW_RESPONSE,
-      data: response,
+      data: response
     });
   }
 
   closeViewResponse() {
     dispatcher.handleAction({
       actionType: responseConstants.CLOSE_VIEW_RESPONSE,
-      data: null,
+      data: null
     });
   }
 
@@ -41,7 +41,7 @@ class ResponseActions {
     const xhr = new XMLHttpRequest(); // eslint-disable-line
     const data = {
       email: response.questions['Submitter Email'],
-      emailContent,
+      emailContent
     };
 
     xhr.onreadystatechange = () => {
@@ -50,7 +50,7 @@ class ResponseActions {
 
         dispatcher.handleAction({
           actionType: responseConstants.APPROVE_RESPONSE,
-          data: surveyResponse,
+          data: surveyResponse
         });
       } else if (xhr.readyState === 4 && xhr.status === 400) {
         const error = xhr.responseText;
@@ -58,27 +58,27 @@ class ResponseActions {
         dispatcher.handleAction({
           actionType: modalConstants.SHOW_ERROR_MODAL,
           data: {
-            content: error,
-          },
+            content: error
+          }
         });
       } else if (xhr.readyState === 4 && xhr.status === 302) {
         dispatcher.handleAction({
           actionType: modalConstants.SHOW_ERROR_MODAL,
           data: {
-            content: 'Your session has expired. Please refresh the page and try again.',
-          },
+            content: 'Your session has expired. Please refresh the page and try again.'
+          }
         });
       } else if (xhr.readyState === 4 && xhr.status === 500) {
         dispatcher.handleAction({
           actionType: modalConstants.SHOW_ERROR_MODAL,
           data: {
             content:
-              'Internal server error has occurred. Please try again or contact the system administrator.',
-          },
+              'Internal server error has occurred. Please try again or contact the system administrator.'
+          }
         });
+      } else if (xhr.readyState === 4) {
+        throw new Error(`Approve response failed. ${xhr.status}: ${xhr.responseText}`);
       }
-
-      throw new Error(`Approve response failed. ${xhr.status}: ${xhr.responseText}`);
     };
 
     xhr.open('POST', `/responses/${response.id}/approve`, true);
@@ -90,7 +90,7 @@ class ResponseActions {
     const xhr = new XMLHttpRequest(); // eslint-disable-line
     const data = {
       email: response.questions['Submitter Email'],
-      emailContent,
+      emailContent
     };
 
     xhr.onreadystatechange = () => {
@@ -99,7 +99,7 @@ class ResponseActions {
 
         dispatcher.handleAction({
           actionType: responseConstants.REJECT_RESPONSE,
-          data: surveyResponse,
+          data: surveyResponse
         });
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         throw new Error('Reject response failed');
@@ -107,20 +107,20 @@ class ResponseActions {
         dispatcher.handleAction({
           actionType: modalConstants.SHOW_ERROR_MODAL,
           data: {
-            content: 'Your session has expired. Please refresh the page and try again.',
-          },
+            content: 'Your session has expired. Please refresh the page and try again.'
+          }
         });
       } else if (xhr.readyState === 4 && xhr.status === 500) {
         dispatcher.handleAction({
           actionType: modalConstants.SHOW_ERROR_MODAL,
           data: {
             content:
-              'Internal server error has occurred. Please try again or contact the system administrator.',
-          },
+              'Internal server error has occurred. Please try again or contact the system administrator.'
+          }
         });
+      } else if (xhr.readyState === 4) {
+        throw new Error(`Reject response failed. ${xhr.status}: ${xhr.responseText}`);
       }
-
-      throw new Error(`Reject response failed. ${xhr.status}: ${xhr.responseText}`);
     };
 
     xhr.open('POST', `/responses/${response.id}/reject`, true);
