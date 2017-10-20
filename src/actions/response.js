@@ -14,8 +14,7 @@ class ResponseActions {
           actionType: responseConstants.SET_RESPONSES,
           data: responses
         });
-      }
-      else if (xhr.readyState === 4 && xhr.status !== 200) {
+      } else if (xhr.readyState === 4 && xhr.status !== 200) {
         throw new Error('Fetching responses failed');
       }
     };
@@ -46,26 +45,42 @@ class ResponseActions {
     };
 
     xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4 && xhr.status === 200) {
+      if (xhr.readyState !== 4) {
+        return;
+      }
+      if (xhr.status === 200) {
         const surveyResponse = JSON.parse(xhr.responseText);
 
         dispatcher.handleAction({
           actionType: responseConstants.APPROVE_RESPONSE,
           data: surveyResponse
         });
-      }
-      else if (xhr.readyState === 4 && xhr.status === 400) {
+      } else if (xhr.status === 400) {
         const error = xhr.responseText;
 
         dispatcher.handleAction({
           actionType: modalConstants.SHOW_ERROR_MODAL,
           data: {
-            content: error,
+            content: error
           }
         });
-      }
-      else if (xhr.readyState === 4 && xhr.status !== 200) {
-        throw new Error('Approve response failed');
+      } else if (xhr.status === 302) {
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content: 'Your session has expired. Please refresh the page and try again.'
+          }
+        });
+      } else if (xhr.status === 500) {
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content:
+              'Internal server error has occurred. Please try again or contact the system administrator.'
+          }
+        });
+      } else {
+        throw new Error(`Approve response action returned: Status ${xhr.status}, ${xhr.responseText}`);
       }
     };
 
@@ -82,16 +97,33 @@ class ResponseActions {
     };
 
     xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4 && xhr.status === 200) {
+      if (xhr.readyState !== 4) {
+        return;
+      }
+      if (xhr.status === 200) {
         const surveyResponse = JSON.parse(xhr.responseText);
 
         dispatcher.handleAction({
           actionType: responseConstants.REJECT_RESPONSE,
           data: surveyResponse
         });
-      }
-      else if (xhr.readyState === 4 && xhr.status !== 200) {
-        throw new Error('Reject response failed');
+      } else if (xhr.status === 302) {
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content: 'Your session has expired. Please refresh the page and try again.'
+          }
+        });
+      } else if (xhr.status === 500) {
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content:
+              'Internal server error has occurred. Please try again or contact the system administrator.'
+          }
+        });
+      } else {
+        throw new Error(`Reject response failed. ${xhr.status}: ${xhr.responseText}`);
       }
     };
 
