@@ -103,7 +103,24 @@ class ResponseActions {
         });
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         throw new Error('Reject response failed');
+      } else if (xhr.readyState === 4 && xhr.status === 302) {
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content: 'Your session has expired. Please refresh the page and try again.',
+          },
+        });
+      } else if (xhr.readyState === 4 && xhr.status === 500) {
+        dispatcher.handleAction({
+          actionType: modalConstants.SHOW_ERROR_MODAL,
+          data: {
+            content:
+              'Internal server error has occurred. Please try again or contact the system administrator.',
+          },
+        });
       }
+
+      throw new Error(`Reject response failed. ${xhr.status}: ${xhr.responseText}`);
     };
 
     xhr.open('POST', `/responses/${response.id}/reject`, true);
