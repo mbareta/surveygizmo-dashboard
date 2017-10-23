@@ -9,6 +9,7 @@ const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 const responsesStore = require('../../../stores/responses');
 const responseActions = require('../../../actions/response');
+const compareBySubmittedAt = require('../../../utils/responses');
 
 class FormResponses extends React.PureComponent {
   constructor() {
@@ -35,13 +36,13 @@ class FormResponses extends React.PureComponent {
       approvedCount: 0,
       rejectedCount: 0,
       unprocessedCount: 0,
-      isPrinting: false
+      isPrinting: false,
     };
   }
 
   handlePageClick(data) {
     const pageIndex = data.selected + 1;
-    this.setState({currentPage: pageIndex});
+    this.setState({ currentPage: pageIndex });
     responseActions.loadResponses(pageIndex);
   }
 
@@ -60,7 +61,7 @@ class FormResponses extends React.PureComponent {
   closeModal() {
     this.setState({
       rejectResponse: null,
-      approveResponse: null
+      approveResponse: null,
     });
   }
 
@@ -108,30 +109,30 @@ class FormResponses extends React.PureComponent {
     let filteredResponses = [];
 
     if (search) {
-      filteredResponses = responses.filter(r =>
-        r.questions &&
-        (
-          (r.questions['Submitter First Name'].toLowerCase()).indexOf(search.toLowerCase()) >= 0 ||
-          (r.questions['Submitter Last Name'].toLowerCase()).indexOf(search.toLowerCase()) >= 0 ||
-          (r.questions['Submitter Email'].toLowerCase()).indexOf(search.toLowerCase()) >= 0 ||
-          (r.questions['Organization Name'].toLowerCase()).indexOf(search.toLowerCase()) >= 0
-        )
+      filteredResponses = responses.filter(
+        r =>
+          r.questions &&
+          (r.questions['Submitter First Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            r.questions['Submitter Last Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            r.questions['Submitter Email'].toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            r.questions['Organization Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0),
       );
-    }
-    else {
+    } else {
       filteredResponses = responses;
     }
 
     if (filter === 'pending') {
       filteredResponses = filteredResponses.filter(r => !r.status);
-    }
-    else if (filter) {
+    } else if (filter) {
       filteredResponses = filteredResponses.filter(r => r.status && r.status[filter]);
     }
 
+    filteredResponses.sort(compareBySubmittedAt);
     return (
       <div>
-        <button className="printButton no-print" onClick={() => this.printResponses()}>Print</button>
+        <button className="printButton no-print" onClick={() => this.printResponses()}>
+          Print
+        </button>
         <div className="stats no-print">
           <h2>Affiliate Signup Responses ({this.state.totalCount})</h2>
           <span>
@@ -158,7 +159,7 @@ class FormResponses extends React.PureComponent {
           </div>
         </div>
         <FormResponsesTable isPrinting={this.state.isPrinting} responses={filteredResponses} />
-        <div className='pagination no-print'>
+        <div className="pagination no-print">
           <ReactPaginate
             pageCount={this.state.pageCount}
             onPageChange={this.handlePageClick}
@@ -177,6 +178,6 @@ class FormResponses extends React.PureComponent {
       </div>
     );
   }
-};
+}
 
 module.exports = FormResponses;
