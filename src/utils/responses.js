@@ -1,8 +1,8 @@
-function compareBySubmittedAt(fst, sec) {
-  const fstDate = new Date(fst.submittedAt);
-  const secDate = new Date(sec.submittedAt);
+function compareBySubmittedAt(first, second) {
+  const firstDate = new Date(first.submittedAt);
+  const secondDate = new Date(second.submittedAt);
 
-  if (fstDate > secDate) {
+  if (firstDate > secondDate) {
     return -1;
   }
 

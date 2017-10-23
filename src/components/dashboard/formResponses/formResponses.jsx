@@ -36,7 +36,7 @@ class FormResponses extends React.PureComponent {
       approvedCount: 0,
       rejectedCount: 0,
       unprocessedCount: 0,
-      isPrinting: false,
+      isPrinting: false
     };
   }
 
@@ -61,7 +61,7 @@ class FormResponses extends React.PureComponent {
   closeModal() {
     this.setState({
       rejectResponse: null,
-      approveResponse: null,
+      approveResponse: null
     });
   }
 
@@ -115,7 +115,7 @@ class FormResponses extends React.PureComponent {
           (r.questions['Submitter First Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
             r.questions['Submitter Last Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
             r.questions['Submitter Email'].toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
-            r.questions['Organization Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0),
+            r.questions['Organization Name'].toLowerCase().indexOf(search.toLowerCase()) >= 0)
       );
     } else {
       filteredResponses = responses;
