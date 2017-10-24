@@ -98,7 +98,7 @@ const sendApprovalEmail = (email, content) => Mailer.send({
   subject: 'Kauffman FastTrac Affiliate Approval',
   text: content,
   html: content
-})
+});
 
 const rejectResponse = (req, res, next) => {
   const { email, emailContent } = req.body;
