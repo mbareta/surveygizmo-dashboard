@@ -85,7 +85,7 @@ class FormResponses extends React.PureComponent {
   }
 
   onStoreChange() {
-    const currentPage = this.getCurrentPageIndex() + 1;
+    const currentPage = this.getCurrentPage();
 
     this.setState({
       responses: responsesStore.getResponses(currentPage),
@@ -98,7 +98,7 @@ class FormResponses extends React.PureComponent {
   }
 
   componentDidMount() {
-    const currentPage = this.getCurrentPageIndex() + 1;
+    const currentPage = this.getCurrentPage();
 
     responsesStore.addChangeListener(this.onStoreChange);
     responseActions.loadResponses(currentPage);
@@ -122,6 +122,10 @@ class FormResponses extends React.PureComponent {
 
   setCurrentPageIndex(index) {
     localStorage.setItem('currentPageIndex', index);
+  }
+
+  getCurrentPage() {
+    return this.getCurrentPageIndex() + 1;
   }
 
   render() {
