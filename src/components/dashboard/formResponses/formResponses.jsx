@@ -40,7 +40,7 @@ class FormResponses extends React.PureComponent {
   }
 
   handlePageClick({ selected }) {
-    localStorage.setItem('currentPageIndex', selected);
+    this.setCurrentPageIndex(selected);
 
     const page = selected + 1;
     responseActions.loadResponses(page);
@@ -85,7 +85,7 @@ class FormResponses extends React.PureComponent {
   }
 
   onStoreChange() {
-    const currentPage = localStorage.getItem('currentPageIndex') + 1;
+    const currentPage = this.getCurrentPageIndex() + 1;
 
     this.setState({
       responses: responsesStore.getResponses(currentPage),
@@ -98,14 +98,7 @@ class FormResponses extends React.PureComponent {
   }
 
   componentDidMount() {
-    let currentPageIndex = localStorage.getItem('currentPageIndex');
-
-    if (!currentPageIndex) {
-      currentPageIndex = 0;
-      localStorage.setItem('currentPageIndex', currentPageIndex)
-    }
-
-    const currentPage = currentPageIndex + 1;
+    const currentPage = this.getCurrentPageIndex() + 1;
 
     responsesStore.addChangeListener(this.onStoreChange);
     responseActions.loadResponses(currentPage);
@@ -115,9 +108,25 @@ class FormResponses extends React.PureComponent {
     responsesStore.removeChangeListener(this.onStoreChange);
   }
 
+  getCurrentPageIndex() {
+    const currentPageIndex = localStorage.getItem('currentPageIndex');
+
+    if (!currentPageIndex) {
+      localStorage.setItem('currentPageIndex', 0);
+      return 0;
+    }
+
+    return parseInt(currentPageIndex, 10);
+
+  }
+
+  setCurrentPageIndex(index) {
+    localStorage.setItem('currentPageIndex', index);
+  }
+
   render() {
     const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
-    const currentPageIndex = parseInt(localStorage.getItem('currentPageIndex'), 10) || 0;
+    const currentPageIndex = this.getCurrentPageIndex();
     let filteredResponses = [];
 
     if (search) {
