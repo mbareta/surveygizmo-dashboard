@@ -30,7 +30,6 @@ class FormResponses extends React.PureComponent {
       responses: [],
       approveResponse: null,
       rejectResponse: null,
-      currentPage: 1,
       totalCount: 0,
       pageCount: 0,
       approvedCount: 0,
@@ -40,10 +39,11 @@ class FormResponses extends React.PureComponent {
     };
   }
 
-  handlePageClick(data) {
-    const pageIndex = data.selected + 1;
-    this.setState({ currentPage: pageIndex });
-    responseActions.loadResponses(pageIndex);
+  handlePageClick({ selected }) {
+    localStorage.setItem('currentPageIndex', selected);
+
+    const page = selected + 1;
+    responseActions.loadResponses(page);
   }
 
   viewResponse(viewResponse) {
@@ -85,8 +85,10 @@ class FormResponses extends React.PureComponent {
   }
 
   onStoreChange() {
+    const currentPage = localStorage.getItem('currentPageIndex') + 1;
+
     this.setState({
-      responses: responsesStore.getResponses(this.state.currentPage),
+      responses: responsesStore.getResponses(currentPage),
       totalCount: responsesStore.getTotalCount(),
       pageCount: responsesStore.getPageCount(),
       approvedCount: responsesStore.getApprovedCount(),
@@ -96,8 +98,17 @@ class FormResponses extends React.PureComponent {
   }
 
   componentDidMount() {
+    let currentPageIndex = localStorage.getItem('currentPageIndex');
+
+    if (!currentPageIndex) {
+      currentPageIndex = 0;
+      localStorage.setItem('currentPageIndex', currentPageIndex)
+    }
+
+    const currentPage = currentPageIndex + 1;
+
     responsesStore.addChangeListener(this.onStoreChange);
-    responseActions.loadResponses(this.state.currentPage);
+    responseActions.loadResponses(currentPage);
   }
 
   componentWillUnmount() {
@@ -106,6 +117,7 @@ class FormResponses extends React.PureComponent {
 
   render() {
     const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
+    const currentPageIndex = parseInt(localStorage.getItem('currentPageIndex'), 10) || 0;
     let filteredResponses = [];
 
     if (search) {
@@ -163,8 +175,10 @@ class FormResponses extends React.PureComponent {
           <ReactPaginate
             pageCount={this.state.pageCount}
             onPageChange={this.handlePageClick}
+            activeClassName="active"
             marginPagesDisplayed={2}
             pageRangeDisplayed={2}
+            initialPage={currentPageIndex}
           />
         </div>
 
