@@ -36,6 +36,10 @@
     margin-left: 6px;
 }
 
+.active {
+    color: $accent-color;
+}
+
 @media print {
     .no-print {
         display: none;

@@ -30,7 +30,6 @@ class FormResponses extends React.PureComponent {
       responses: [],
       approveResponse: null,
       rejectResponse: null,
-      currentPage: 1,
       totalCount: 0,
       pageCount: 0,
       approvedCount: 0,
@@ -40,10 +39,11 @@ class FormResponses extends React.PureComponent {
     };
   }
 
-  handlePageClick(data) {
-    const pageIndex = data.selected + 1;
-    this.setState({ currentPage: pageIndex });
-    responseActions.loadResponses(pageIndex);
+  handlePageClick({ selected }) {
+    this.setCurrentPageIndex(selected);
+
+    const page = selected + 1;
+    responseActions.loadResponses(page);
   }
 
   viewResponse(viewResponse) {
@@ -85,8 +85,10 @@ class FormResponses extends React.PureComponent {
   }
 
   onStoreChange() {
+    const currentPage = this.getCurrentPage();
+
     this.setState({
-      responses: responsesStore.getResponses(this.state.currentPage),
+      responses: responsesStore.getResponses(currentPage),
       totalCount: responsesStore.getTotalCount(),
       pageCount: responsesStore.getPageCount(),
       approvedCount: responsesStore.getApprovedCount(),
@@ -96,16 +98,39 @@ class FormResponses extends React.PureComponent {
   }
 
   componentDidMount() {
+    const currentPage = this.getCurrentPage();
+
     responsesStore.addChangeListener(this.onStoreChange);
-    responseActions.loadResponses(this.state.currentPage);
+    responseActions.loadResponses(currentPage);
   }
 
   componentWillUnmount() {
     responsesStore.removeChangeListener(this.onStoreChange);
   }
 
+  getCurrentPageIndex() {
+    const currentPageIndex = localStorage.getItem('currentPageIndex');
+
+    if (!currentPageIndex) {
+      localStorage.setItem('currentPageIndex', 0);
+      return 0;
+    }
+
+    return parseInt(currentPageIndex, 10);
+
+  }
+
+  setCurrentPageIndex(index) {
+    localStorage.setItem('currentPageIndex', index);
+  }
+
+  getCurrentPage() {
+    return this.getCurrentPageIndex() + 1;
+  }
+
   render() {
     const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
+    const currentPageIndex = this.getCurrentPageIndex();
     let filteredResponses = [];
 
     if (search) {
@@ -163,8 +188,10 @@ class FormResponses extends React.PureComponent {
           <ReactPaginate
             pageCount={this.state.pageCount}
             onPageChange={this.handlePageClick}
+            activeClassName="active"
             marginPagesDisplayed={2}
             pageRangeDisplayed={2}
+            initialPage={currentPageIndex}
           />
         </div>
 
