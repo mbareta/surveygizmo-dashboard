@@ -9,7 +9,7 @@ const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 const responsesStore = require('../../../stores/responses');
 const responseActions = require('../../../actions/response');
-const { comparators, withReverse } = require('../../../utils/responses');
+const { comparators, withAscending } = require('../../../utils/responses');
 
 class FormResponses extends React.PureComponent {
   constructor() {
@@ -168,7 +168,7 @@ class FormResponses extends React.PureComponent {
     }
 
     if (sortAscending) {
-      filteredResponses.sort(withReverse(comparator));
+      filteredResponses.sort(withAscending(comparator));
     } else {
       filteredResponses.sort(comparator);
     }

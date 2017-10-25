@@ -41,7 +41,7 @@ function compareByStatus(first, second) {
   return compare(first.statusString, second.statusString);
 }
 
-function withReverse(comparator) {
+function withAscending(comparator) {
   return (first, second) => {
     if (comparator(first, second) === -1) {
       return 1;
@@ -58,4 +58,4 @@ const comparators = {
   submittedAt: compareBySubmittedAt
 };
 
-module.exports = { comparators, withReverse };
+module.exports = { comparators, withAscending };
