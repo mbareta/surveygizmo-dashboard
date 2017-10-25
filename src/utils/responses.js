@@ -9,4 +9,8 @@ function compareBySubmittedAt(first, second) {
   return 1;
 }
 
-module.exports = compareBySubmittedAt;
+const comparators = {
+  submittedAt: compareBySubmittedAt
+};
+
+module.exports = comparators;

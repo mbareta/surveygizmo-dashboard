@@ -7,11 +7,26 @@ const FormResponsesTable = ({ isPrinting, responses }) => (
   <table className={`${isPrinting ? '' : 'no-print'} form-responses`}>
     <thead>
       <tr>
-        <td>Name</td>
-        <td>Email</td>
-        <td>Company Name</td>
-        <td>Submitted at</td>
-        <td>Status</td>
+        <td>
+          Name
+          <button>ˆ</button>
+        </td>
+        <td>
+          Email
+          <button>ˆ</button>
+        </td>
+        <td>
+          Company Name
+          <button>ˆ</button>
+        </td>
+        <td>
+          Submitted at
+          <button>ˆ</button>
+        </td>
+        <td>
+          Status
+          <button>ˆ</button>
+        </td>
         <td className="no-print">Actions</td>
       </tr>
     </thead>
