@@ -9,7 +9,7 @@ const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 const responsesStore = require('../../../stores/responses');
 const responseActions = require('../../../actions/response');
-const comparators = require('../../../utils/responses');
+const { comparators, withReverse } = require('../../../utils/responses');
 
 class FormResponses extends React.PureComponent {
   constructor() {
@@ -23,6 +23,7 @@ class FormResponses extends React.PureComponent {
     this.search = this.search.bind(this);
     this.filter = this.filter.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.onSort = this.onSort.bind(this);
 
     this.state = {
       search: '',
@@ -37,6 +38,7 @@ class FormResponses extends React.PureComponent {
       unprocessedCount: 0,
       isPrinting: false,
       comparator: comparators.submittedAt,
+      sortAscending: false
     };
   }
 
@@ -129,12 +131,20 @@ class FormResponses extends React.PureComponent {
     return this.getCurrentPageIndex() + 1;
   }
 
-  onSort(comparator) {
-    this.setState({ comparator });
+  onSort(newComparator) {
+    const { comparator } = this.state;
+
+    if (comparator === newComparator) {
+        this.setState(state => ({
+          sortAscending: !state.sortAscending,
+        }));
+    } else {
+      this.setState({ comparator: newComparator });
+    }
   }
 
   render() {
-    const { responses, comparator, viewResponse, approveResponse, rejectResponse, search, filter, isPrinting } = this.state;
+    const { responses, comparator, sortAscending, viewResponse, approveResponse, rejectResponse, search, filter, isPrinting } = this.state;
     const currentPageIndex = this.getCurrentPageIndex();
     let filteredResponses = [];
 
@@ -157,7 +167,11 @@ class FormResponses extends React.PureComponent {
       filteredResponses = filteredResponses.filter(r => r.status && r.status[filter]);
     }
 
-    filteredResponses.sort(comparator);
+    if (sortAscending) {
+      filteredResponses.sort(withReverse(comparator));
+    } else {
+      filteredResponses.sort(comparator);
+    }
 
     return (
       <div>

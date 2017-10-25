@@ -1,15 +1,16 @@
 const React = require('react');
 const FormResponse = require('./formResponse/formResponse.jsx');
+const { comparators } = require('../../../utils/responses');
 
-const { array, bool } = React.PropTypes;
+const { array, bool, func } = React.PropTypes;
 
-const FormResponsesTable = ({ isPrinting, responses }) => (
+const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
   <table className={`${isPrinting ? '' : 'no-print'} form-responses`}>
     <thead>
       <tr>
         <td>
           Name
-          <button>ˆ</button>
+          <button onClick={() => onSort(comparators.name)}>ˆ</button>
         </td>
         <td>
           Email
@@ -46,6 +47,7 @@ const FormResponsesTable = ({ isPrinting, responses }) => (
 FormResponsesTable.propTypes = {
   responses: array.isRequired, // eslint-disable-line
   isPrinting: bool.isRequired,
+  onSort: func.isRequired
 };
 
 module.exports = FormResponsesTable;
