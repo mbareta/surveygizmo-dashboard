@@ -1,5 +1,6 @@
 const React = require('react');
 const FormResponse = require('./formResponse/formResponse.jsx');
+const Icon = require('../../icon/index.jsx');
 const { comparators } = require('../../../utils/responses');
 
 const { array, bool, func } = React.PropTypes;
@@ -10,39 +11,63 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
       <tr>
         <td>
           Name
-          <button onClick={() => onSort(comparators.name)}>ˆ</button>
+          <button
+            className="no-chrome no-print sort-button"
+            onClick={() => onSort(comparators.name)}
+          >
+            <Icon icon="sortDesc" />
+          </button>
         </td>
         <td>
           Email
-          <button onClick={() => onSort(comparators.email)}>ˆ</button>
+          <button
+            className="no-chrome no-print sort-button"
+            onClick={() => onSort(comparators.email)}
+          >
+            <Icon icon="sortDesc" />
+          </button>
         </td>
         <td>
           Company Name
-          <button onClick={() => onSort(comparators.company)}>ˆ</button>
+          <button
+            className="no-chrome no-print sort-button"
+            onClick={() => onSort(comparators.company)}
+          >
+            <Icon icon="sortDesc" />
+          </button>
         </td>
         <td>
           Submitted at
-          <button onClick={() => onSort(comparators.submittedAt)}>ˆ</button>
+          <button
+            className="no-chrome no-print sort-button"
+            onClick={() => onSort(comparators.submittedAt)}
+          >
+            <Icon icon="sortDesc" />
+          </button>
         </td>
         <td>
           Status
-          <button onClick={() => onSort(comparators.status)}>ˆ</button>
+          <button
+            className="no-chrome no-print sort-button"
+            onClick={() => onSort(comparators.status)}
+          >
+            <Icon icon="sortDesc" />
+          </button>
         </td>
         <td className="no-print">Actions</td>
       </tr>
     </thead>
     <tbody>
-      {
-        responses.map(response =>
-          <FormResponse
-            key={`form-response-${response.id}`}
-            response={response}
-            viewResponse={this.viewResponse}
-          />
-        )
-      }
+      {responses.map(response => (
+        <FormResponse
+          key={`form-response-${response.id}`}
+          response={response}
+          viewResponse={this.viewResponse}
+        />
+      ))}
     </tbody>
-  </table>);
+  </table>
+);
 
 FormResponsesTable.propTypes = {
   responses: array.isRequired, // eslint-disable-line
