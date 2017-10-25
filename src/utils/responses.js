@@ -20,6 +20,36 @@ function compareByName(first, second) {
   return 1;
 }
 
+function compareByEmail(first, second) {
+  const firstEmail = first.questions['Submitter Email'];
+  const secondEmail = second.questions['Submitter Email'];
+
+  if (firstEmail < secondEmail) {
+    return -1;
+  }
+
+  return 1;
+}
+
+function compareByCompany(first, second) {
+  const firstCompany = first.questions['Organization Name'];
+  const secondCompany = second.questions['Organization Name'];
+
+  if (firstCompany < secondCompany) {
+    return -1;
+  }
+
+  return 1;
+}
+
+function compareByStatus(first, second) {
+  if (first.statusString < second.statusString) {
+    return -1;
+  }
+
+  return 1;
+}
+
 function withReverse(comparator) {
   return (first, second) => {
     if (comparator(first, second) === -1) {
@@ -31,6 +61,9 @@ function withReverse(comparator) {
 
 const comparators = {
   name: compareByName,
+  email: compareByEmail,
+  company: compareByCompany,
+  status: compareByStatus,
   submittedAt: compareBySubmittedAt
 };
 

@@ -14,19 +14,19 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
         </td>
         <td>
           Email
-          <button>ˆ</button>
+          <button onClick={() => onSort(comparators.email)}>ˆ</button>
         </td>
         <td>
           Company Name
-          <button>ˆ</button>
+          <button onClick={() => onSort(comparators.company)}>ˆ</button>
         </td>
         <td>
           Submitted at
-          <button>ˆ</button>
+          <button onClick={() => onSort(comparators.submittedAt)}>ˆ</button>
         </td>
         <td>
           Status
-          <button>ˆ</button>
+          <button onClick={() => onSort(comparators.status)}>ˆ</button>
         </td>
         <td className="no-print">Actions</td>
       </tr>
