@@ -38,7 +38,7 @@ class FormResponses extends React.PureComponent {
       unprocessedCount: 0,
       isPrinting: false,
       comparator: comparators.submittedAt,
-      sortAscending: false
+      sortAscending: true
     };
   }
 
