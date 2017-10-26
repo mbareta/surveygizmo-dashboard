@@ -9,7 +9,7 @@ const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 const responsesStore = require('../../../stores/responses');
 const responseActions = require('../../../actions/response');
-const compareBySubmittedAt = require('../../../utils/responses');
+const { comparators, withAscending } = require('../../../utils/responses');
 
 class FormResponses extends React.PureComponent {
   constructor() {
@@ -23,6 +23,7 @@ class FormResponses extends React.PureComponent {
     this.search = this.search.bind(this);
     this.filter = this.filter.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.onSort = this.onSort.bind(this);
 
     this.state = {
       search: '',
@@ -35,7 +36,9 @@ class FormResponses extends React.PureComponent {
       approvedCount: 0,
       rejectedCount: 0,
       unprocessedCount: 0,
-      isPrinting: false
+      isPrinting: false,
+      comparator: comparators.submittedAt,
+      sortAscending: true
     };
   }
 
@@ -128,8 +131,20 @@ class FormResponses extends React.PureComponent {
     return this.getCurrentPageIndex() + 1;
   }
 
+  onSort(newComparator) {
+    const { comparator } = this.state;
+
+    if (comparator === newComparator) {
+        this.setState(state => ({
+          sortAscending: !state.sortAscending,
+        }));
+    } else {
+      this.setState({ comparator: newComparator });
+    }
+  }
+
   render() {
-    const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
+    const { responses, comparator, sortAscending, viewResponse, approveResponse, rejectResponse, search, filter, isPrinting } = this.state;
     const currentPageIndex = this.getCurrentPageIndex();
     let filteredResponses = [];
 
@@ -152,7 +167,12 @@ class FormResponses extends React.PureComponent {
       filteredResponses = filteredResponses.filter(r => r.status && r.status[filter]);
     }
 
-    filteredResponses.sort(compareBySubmittedAt);
+    if (sortAscending) {
+      filteredResponses.sort(withAscending(comparator));
+    } else {
+      filteredResponses.sort(comparator);
+    }
+
     return (
       <div>
         <button className="printButton no-print" onClick={() => this.printResponses()}>
@@ -183,7 +203,11 @@ class FormResponses extends React.PureComponent {
             <b style={{ textAlign: 'left' }}>{filteredResponses.length} results</b>
           </div>
         </div>
-        <FormResponsesTable isPrinting={this.state.isPrinting} responses={filteredResponses} />
+        <FormResponsesTable
+          isPrinting={isPrinting}
+          onSort={this.onSort}
+          responses={filteredResponses}
+        />
         <div className="pagination no-print">
           <ReactPaginate
             pageCount={this.state.pageCount}

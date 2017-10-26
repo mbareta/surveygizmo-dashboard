@@ -40,6 +40,10 @@
     color: $accent-color;
 }
 
+.sort-button {
+    vertical-align: middle;
+}
+
 @media print {
     .no-print {
         display: none;
