@@ -218,7 +218,7 @@ class FormResponses extends React.PureComponent {
         </div>
         <FormResponsesTable
           isPrinting={isPrinting}
-          onSort={comparator => this.onSort(comparator)}
+          onSort={this.onSort}
           responses={filteredResponses}
         />
         <div className="pagination no-print">

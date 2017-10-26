@@ -14,7 +14,7 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
           Name
           <Sort
             comparator={comparators.name}
-            onSort={comparator => onSort(comparator)}
+            onSort={onSort}
           >
             {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
           </Sort>
@@ -23,7 +23,7 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
           Email
           <Sort
             comparator={comparators.email}
-            onSort={comparator => onSort(comparator)}
+            onSort={onSort}
           >
             {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
           </Sort>
@@ -32,7 +32,7 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
           Company Name
           <Sort
             comparator={comparators.company}
-            onSort={comparator => onSort(comparator)}
+            onSort={onSort}
           >
             {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
           </Sort>
@@ -41,7 +41,7 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
           Submitted at
           <Sort
             comparator={comparators.submittedAt}
-            onSort={comparator => onSort(comparator)}
+            onSort={onSort}
           >
             {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
           </Sort>
@@ -50,7 +50,7 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
           Status
           <Sort
             comparator={comparators.status}
-            onSort={comparator => onSort(comparator)}
+            onSort={onSort}
           >
             {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
           </Sort>
