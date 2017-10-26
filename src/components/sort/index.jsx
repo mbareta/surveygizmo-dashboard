@@ -49,8 +49,9 @@ class Sort extends React.Component {
 
 Sort.propTypes = {
   onSort: React.PropTypes.func.isRequired,
+  children: React.PropTypes.func.isRequired,
   className: React.PropTypes.string,
-  children: React.PropTypes.func.isRequired
+  reverseInitial: React.PropTypes.bool
 };
 
 module.exports = Sort;
