@@ -12,6 +12,14 @@ class Sort extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { ascending } = this.props;
+
+    if (ascending) {
+      this.setState({ ascending });
+    }
+  }
+
   onClick() {
     const { onSort, comparator } = this.props;
     const { ascending } = this.state;
