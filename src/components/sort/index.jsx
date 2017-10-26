@@ -13,10 +13,10 @@ class Sort extends React.Component {
   }
 
   componentDidMount() {
-    const { ascending } = this.props;
+    const { reverseInitial } = this.props;
 
-    if (ascending) {
-      this.setState({ ascending });
+    if (reverseInitial) {
+      this.setState({ ascending: reverseInitial });
     }
   }
 
