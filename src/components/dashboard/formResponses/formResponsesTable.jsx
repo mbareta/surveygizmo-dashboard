@@ -1,6 +1,7 @@
 const React = require('react');
 const FormResponse = require('./formResponse/formResponse.jsx');
 const Icon = require('../../icon/index.jsx');
+const Sort = require('../../sort/index.jsx');
 const { comparators } = require('../../../utils/responses');
 
 const { array, bool, func } = React.PropTypes;
@@ -11,48 +12,48 @@ const FormResponsesTable = ({ isPrinting, responses, onSort }) => (
       <tr>
         <td>
           Name
-          <button
-            className="no-chrome no-print sort-button"
-            onClick={() => onSort(comparators.name)}
+          <Sort
+            comparator={comparators.name}
+            onSort={onSort}
           >
-            <Icon icon="sortDesc" />
-          </button>
+            {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
+          </Sort>
         </td>
         <td>
           Email
-          <button
-            className="no-chrome no-print sort-button"
-            onClick={() => onSort(comparators.email)}
+          <Sort
+            comparator={comparators.email}
+            onSort={onSort}
           >
-            <Icon icon="sortDesc" />
-          </button>
+            {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
+          </Sort>
         </td>
         <td>
           Company Name
-          <button
-            className="no-chrome no-print sort-button"
-            onClick={() => onSort(comparators.company)}
+          <Sort
+            comparator={comparators.company}
+            onSort={onSort}
           >
-            <Icon icon="sortDesc" />
-          </button>
+            {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
+          </Sort>
         </td>
         <td>
           Submitted at
-          <button
-            className="no-chrome no-print sort-button"
-            onClick={() => onSort(comparators.submittedAt)}
+          <Sort
+            comparator={comparators.submittedAt}
+            onSort={onSort}
           >
-            <Icon icon="sortDesc" />
-          </button>
+            {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
+          </Sort>
         </td>
         <td>
           Status
-          <button
-            className="no-chrome no-print sort-button"
-            onClick={() => onSort(comparators.status)}
+          <Sort
+            comparator={comparators.status}
+            onSort={onSort}
           >
-            <Icon icon="sortDesc" />
-          </button>
+            {ascending => <Icon icon={ ascending ? 'sortAsc' : 'sortDesc'} />}
+          </Sort>
         </td>
         <td className="no-print">Actions</td>
       </tr>
