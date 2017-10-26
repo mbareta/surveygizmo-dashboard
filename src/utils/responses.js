@@ -47,7 +47,7 @@ function compareByStatus(first, second) {
 
 function withAscending(comparator) {
   return (first, second) => {
-    if (comparator(first, second) === -1) {
+    if (comparator(first, second) < 0) {
       return 1;
     }
     return -1;
