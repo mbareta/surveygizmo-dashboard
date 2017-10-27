@@ -1,6 +1,5 @@
 const React = require('react');
-
-const cx = require('classNames');
+const cx = require('classnames');
 const { withAscending } = require('../../utils/responses');
 
 class Sort extends React.Component {
