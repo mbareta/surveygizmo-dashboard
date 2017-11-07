@@ -27,7 +27,7 @@
       }
     },
     "cookieSecret": "surveygizmo",
-    "cookieMaxAge": 60000,
+    "cookieMaxAge": 3600000,
     "whitelistRoutes": ["/users/auth", "/users/login"],
     "bugmuncherApiKey": "cd9d0312a0c59b558394",
     "redisUrl": "//localhost:6379"
@@ -60,7 +60,7 @@
       }
     },
     "cookieSecret": "surveygizmo",
-    "cookieMaxAge": 60000,
+    "cookieMaxAge": 21600000,
     "whitelistRoutes": ["/users/auth", "/users/login"],
     "bugmuncherApiKey": "cd9d0312a0c59b558394",
     "redisUrl": "//production-redis:6379"
