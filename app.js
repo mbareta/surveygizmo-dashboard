@@ -15,7 +15,7 @@ const users = require('./routes/users');
 const responses = require('./routes/responses');
 const { requiresStaffRole } = require('./middlewares/auth');
 
-//TESTING JINKINS
+//TESTING JENKINS
 
 const app = express();
 
