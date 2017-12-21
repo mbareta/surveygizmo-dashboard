@@ -15,6 +15,8 @@ const users = require('./routes/users');
 const responses = require('./routes/responses');
 const { requiresStaffRole } = require('./middlewares/auth');
 
+//TEST
+
 const app = express();
 
 app.locals.config = config;
