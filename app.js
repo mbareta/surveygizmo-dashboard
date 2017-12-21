@@ -16,6 +16,7 @@ const responses = require('./routes/responses');
 const { requiresStaffRole } = require('./middlewares/auth');
 
 //TESTING JERKINS
+var fnksn = (a,b,c) => {}
 
 const app = express();
 
