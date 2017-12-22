@@ -22,6 +22,8 @@ var Promise = 22;
 
 let nesto = (  ) =>{{}}
 
+var nista = {};
+
 const app = express();
 
 app.locals.config = config;
