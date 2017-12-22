@@ -28,7 +28,7 @@ var greska = "nesto";
 
 undefined = 33;
 
-// TRIGGER IT DAMMIT, NOW!!
+// TRIGGER IT DAMMIT
 
 const app = express();
 
