@@ -26,7 +26,7 @@ var nista = {};
 
 var greska = "nesto";
 
-undefined = 3;
+undefined = 33;
 
 // TRIGGER IT DAMMIT, NOW!!
 
