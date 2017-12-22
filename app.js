@@ -15,7 +15,7 @@ const users = require('./routes/users');
 const responses = require('./routes/responses');
 const { requiresStaffRole } = require('./middlewares/auth');
 
-// TESTING JERKINS
+// TESTING JENKINS
 var fnksn = (a,b,c) => {}
 var JSON = 'json'
 
