@@ -18,6 +18,8 @@ const { requiresStaffRole } = require('./middlewares/auth');
 // TEST JESNKINS
 var JSON = function() {};
 
+var Promise = 22;
+
 const app = express();
 
 app.locals.config = config;
