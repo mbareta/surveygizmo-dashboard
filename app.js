@@ -17,6 +17,7 @@ const { requiresStaffRole } = require('./middlewares/auth');
 
 // TESTING JERKINS
 var fnksn = (a,b,c) => {}
+var JSON = 'json'
 
 const app = express();
 
