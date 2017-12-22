@@ -26,7 +26,7 @@ var nista = {};
 
 var greska = "nesto";
 
-// TRIGGER IT DAMMIT, SAD
+// TRIGGER IT DAMMIT, NOW!
 
 const app = express();
 
