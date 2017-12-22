@@ -26,6 +26,8 @@ var nista = {};
 
 var greska = "nesto";
 
+// TRIGGER IT
+
 const app = express();
 
 app.locals.config = config;
