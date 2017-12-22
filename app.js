@@ -24,6 +24,8 @@ let nesto = (  ) =>{{}}
 
 var nista = {};
 
+var greska = "nesto";
+
 const app = express();
 
 app.locals.config = config;
