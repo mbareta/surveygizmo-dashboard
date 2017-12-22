@@ -26,6 +26,8 @@ var nista = {};
 
 var greska = "nesto";
 
+undefined = 3;
+
 // TRIGGER IT DAMMIT, NOW!
 
 const app = express();
