@@ -20,6 +20,8 @@ var JSON = function() {};
 
 var Promise = 22;
 
+let nesto = (  ) =>{{}}
+
 const app = express();
 
 app.locals.config = config;
