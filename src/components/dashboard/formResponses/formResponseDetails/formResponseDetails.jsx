@@ -8,6 +8,8 @@ const FormResponseDetails = ({ showApproveModal, showRejectModal }) => {
   const response = responsesStore.getViewResponse();
   if (!response) return null;
 
+  debugger;
+
   const { questions } = response;
   const isApprovedOrRejected = response.statusString === 'Approved' || response.statusString === 'Rejected';
   const noop = Function.prototype;
