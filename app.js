@@ -22,6 +22,8 @@ var Promise = 22;
 
 let nesto = (  ) =>{{}}
 
+ovo bi tribalo radit
+
 var nista = {};
 
 var greska = "nesto";
