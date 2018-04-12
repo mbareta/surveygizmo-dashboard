@@ -15,6 +15,23 @@ const users = require('./routes/users');
 const responses = require('./routes/responses');
 const { requiresStaffRole } = require('./middlewares/auth');
 
+// TEST JESNKINS
+var JSON = function() {};
+
+var Promise = 22;
+
+let nesto = (  ) =>{{}}
+
+var window = 3;
+
+var nista = {};
+
+var greska = "nesto";
+
+undefined = 666;
+
+// TRIGGER IT DAMMIT
+
 const app = express();
 
 app.locals.config = config;
