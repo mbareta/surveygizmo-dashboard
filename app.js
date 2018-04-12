@@ -22,7 +22,7 @@ var Promise = 22;
 
 let nesto = (  ) =>{{}}
 
-ovo bi tribalo radit
+var window = 3;
 
 var nista = {};
 
