@@ -6,7 +6,8 @@
     "start": "nodemon ./bin/www | npm run watch",
     "build": "browserify -t bubleify -t [ envify --NODE_ENV production ] ./src/app.js  > ./public/javascripts/bundle.js",
     "build-dev": "browserify -d -t bubleify ./src/app.js > ./public/javascripts/bundle.js",
-    "watch": "watchify -d -t bubleify ./src/app.js -o ./public/javascripts/bundle.js -v"
+    "watch": "watchify -d -t bubleify ./src/app.js -o ./public/javascripts/bundle.js -v",
+    "prod": "build node ./bin/www"
   },
   "dependencies": {
     "axios": "^0.15.3",
