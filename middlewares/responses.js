@@ -5,6 +5,7 @@ const { UserDataException } = require('../lib/customExceptions');
 const SurveyResponse = require('../models/surveyResponse');
 
 const approveResponse = (req, res, next) => {
+  console.error("APPROVED!");
   const { access_token: accessToken } = req.session.token;
   const { email, emailContent } = req.body;
   const { responseId } = req.params;
@@ -23,8 +24,8 @@ const approveResponse = (req, res, next) => {
         .catch(UserDataException, exception => {
           res.status(400).send(exception.message);
         })
-        .then(response => res.send(response))
-        .catch(error => res.status(500).send(error));
+        .then(response => console.error("RESPONSE: ", response))
+        .catch(error => console.error("error: ", error));
     })
     .catch(error => next(error));
 };
@@ -88,6 +89,7 @@ const doApproveResponse = (emailContent, responseId, token, req) => {
 
       return sendApprovalEmail(account.email, emailContent);
     })
+    .catch(err => { console.error("MAIL ERROR: ", err)})
     .then(() => surveyResponse.setAccountCreated())
     .then(() => EdxApi.createAffiliateEntity(req, surveyResponse.questions))
     .then(() => surveyResponse);
