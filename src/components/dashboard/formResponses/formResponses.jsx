@@ -9,6 +9,7 @@ const ApproveModal = require('../modals/approveModal/approveModal.jsx');
 const RejectModal = require('../modals/rejectModal/rejectModal.jsx');
 const responsesStore = require('../../../stores/responses');
 const responseActions = require('../../../actions/response');
+const { comparators, withAscending } = require('../../../utils/responses');
 
 class FormResponses extends React.PureComponent {
   constructor() {
@@ -22,6 +23,7 @@ class FormResponses extends React.PureComponent {
     this.search = this.search.bind(this);
     this.filter = this.filter.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.onSort = this.onSort.bind(this);
 
     this.state = {
       search: '',
@@ -29,7 +31,6 @@ class FormResponses extends React.PureComponent {
       responses: [],
       approveResponse: null,
       rejectResponse: null,
-      currentPage: 1,
       totalCount: 0,
       pageCount: 0,
       approvedCount: 0,
@@ -39,10 +40,11 @@ class FormResponses extends React.PureComponent {
     };
   }
 
-  handlePageClick(data) {
-    const pageIndex = data.selected + 1;
-    this.setState({currentPage: pageIndex});
-    responseActions.loadResponses(pageIndex);
+  handlePageClick({ selected }) {
+    this.setCurrentPageIndex(selected);
+
+    const page = selected + 1;
+    responseActions.loadResponses(page);
   }
 
   viewResponse(viewResponse) {
@@ -84,54 +86,109 @@ class FormResponses extends React.PureComponent {
   }
 
   onStoreChange() {
+    const currentPage = this.getCurrentPage();
+
     this.setState({
-      responses: responsesStore.getResponses(this.state.currentPage),
       totalCount: responsesStore.getTotalCount(),
       pageCount: responsesStore.getPageCount(),
       approvedCount: responsesStore.getApprovedCount(),
       rejectedCount: responsesStore.getRejectedCount(),
       unprocessedCount: responsesStore.getUnprocessedCount(),
+      responses: responsesStore
+        .getResponses(currentPage)
+        .sort(withAscending(comparators.submittedAt))
     });
   }
 
   componentDidMount() {
+    const currentPage = this.getCurrentPage();
+
     responsesStore.addChangeListener(this.onStoreChange);
-    responseActions.loadResponses(this.state.currentPage);
+    responseActions.loadResponses(currentPage);
   }
 
   componentWillUnmount() {
     responsesStore.removeChangeListener(this.onStoreChange);
   }
 
+  getCurrentPageIndex() {
+    const currentPageIndex = localStorage.getItem('currentPageIndex');
+
+    if (!currentPageIndex) {
+      localStorage.setItem('currentPageIndex', 0);
+      return 0;
+    }
+
+    return parseInt(currentPageIndex, 10);
+  }
+
+  setCurrentPageIndex(index) {
+    localStorage.setItem('currentPageIndex', index);
+  }
+
+  getCurrentPage() {
+    return this.getCurrentPageIndex() + 1;
+  }
+
+  onSort(comparator) {
+    const responses = [...this.state.responses];
+    responses.sort(comparator);
+
+    this.setState({ responses });
+  }
+
   render() {
-    const { responses, viewResponse, approveResponse, rejectResponse, search, filter } = this.state;
+    const {
+      responses,
+      comparator,
+      sortAscending,
+      viewResponse,
+      approveResponse,
+      rejectResponse,
+      search,
+      filter,
+      isPrinting
+    } = this.state;
+    const currentPageIndex = this.getCurrentPageIndex();
     let filteredResponses = [];
 
     if (search) {
-      filteredResponses = responses.filter(r =>
-        r.questions &&
-        (
-          (r.questions['Submitter First Name'].toLowerCase()).indexOf(search.toLowerCase()) >= 0 ||
-          (r.questions['Submitter Last Name'].toLowerCase()).indexOf(search.toLowerCase()) >= 0 ||
-          (r.questions['Submitter Email'].toLowerCase()).indexOf(search.toLowerCase()) >= 0 ||
-          (r.questions['Organization Name'].toLowerCase()).indexOf(search.toLowerCase()) >= 0
-        )
+      filteredResponses = responses.filter(
+        r =>
+          r.questions &&
+          (r.questions['Submitter First Name']
+            .toLowerCase()
+            .indexOf(search.toLowerCase()) >= 0 ||
+            r.questions['Submitter Last Name']
+              .toLowerCase()
+              .indexOf(search.toLowerCase()) >= 0 ||
+            r.questions['Submitter Email']
+              .toLowerCase()
+              .indexOf(search.toLowerCase()) >= 0 ||
+            r.questions['Organization Name']
+              .toLowerCase()
+              .indexOf(search.toLowerCase()) >= 0)
       );
-    }
-    else {
+    } else {
       filteredResponses = responses;
     }
 
     if (filter === 'pending') {
       filteredResponses = filteredResponses.filter(r => !r.status);
-    }
-    else if (filter) {
-      filteredResponses = filteredResponses.filter(r => r.status && r.status[filter]);
+    } else if (filter) {
+      filteredResponses = filteredResponses.filter(
+        r => r.status && r.status[filter]
+      );
     }
 
     return (
       <div>
-        <button className="printButton no-print" onClick={() => this.printResponses()}>Print</button>
+        <button
+          className="printButton no-print"
+          onClick={() => this.printResponses()}
+        >
+          Print
+        </button>
         <div className="stats no-print">
           <h2>Affiliate Signup Responses ({this.state.totalCount})</h2>
           <span>
@@ -154,16 +211,24 @@ class FormResponses extends React.PureComponent {
               <option value="sentPasswordReset">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
-            <b style={{ textAlign: 'left' }}>{filteredResponses.length} results</b>
+            <b style={{ textAlign: 'left' }}>
+              {filteredResponses.length} results
+            </b>
           </div>
         </div>
-        <FormResponsesTable isPrinting={this.state.isPrinting} responses={filteredResponses} />
-        <div className='pagination no-print'>
+        <FormResponsesTable
+          isPrinting={isPrinting}
+          onSort={this.onSort}
+          responses={filteredResponses}
+        />
+        <div className="pagination no-print">
           <ReactPaginate
             pageCount={this.state.pageCount}
             onPageChange={this.handlePageClick}
+            activeClassName="active"
             marginPagesDisplayed={2}
             pageRangeDisplayed={2}
+            initialPage={currentPageIndex}
           />
         </div>
 
@@ -177,6 +242,6 @@ class FormResponses extends React.PureComponent {
       </div>
     );
   }
-};
+}
 
 module.exports = FormResponses;

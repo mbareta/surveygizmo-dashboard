@@ -1,4 +1,5 @@
 const mongoose = require('../lib/mongoose');
+const { allowedResponseKeys } = require('../config/main');
 
 const surveyResponseSchema = mongoose.Schema({
   responseId: Number,
@@ -12,9 +13,14 @@ const surveyResponseSchema = mongoose.Schema({
 });
 
 surveyResponseSchema.methods.setData = function ({ id, submittedAt, questions }) {
+  const filteredQuestions = Object.assign(
+    {},
+    ...allowedResponseKeys.map(key => ({ [key]: questions[key] }))
+  );
   this.responseId = id;
   this.submittedAt = submittedAt;
-  this.questions = questions;
+  this.questions = filteredQuestions;
+
   return this.save();
 };
 

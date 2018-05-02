@@ -37,6 +37,7 @@ app.use(compileSass({
 }));
 
 app.use(session({
+  name: 'surveygizmo.sessionid',
   secret: config.cookieSecret,
   cookie: { maxAge: config.cookieMaxAge },
   store: new RedisStore({

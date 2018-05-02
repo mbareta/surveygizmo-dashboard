@@ -1,5 +1,6 @@
 /* eslint-disable */
 const React = require('react');
+const { allowedResponseKeys } = require('../../../../../config/main');
 const ErrorModal = require('../../modals/errorModal/errorModal.jsx');
 const responsesStore = require('../../../../stores/responses');
 const responseActions = require('../../../../actions/response');
@@ -28,7 +29,7 @@ const FormResponseDetails = ({ showApproveModal, showRejectModal }) => {
           {response.statusString}
         </h1>
         {
-          Object.keys(questions).map(key =>
+          allowedResponseKeys.map(key =>
             <p key={`view-response-details-${response.id}-${key}`}>
               <b>{key}</b>
               {questions[key]}

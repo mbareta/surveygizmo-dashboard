@@ -1,0 +1,27 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /opt/fast-deploy/apps/surveygizmo-dashboard/
+    owner: fast-deploy
+permissions:
+  - object: /opt/fast-deploy
+    pattern: "**"
+    owner: fast-deploy
+    group: fast-deploy
+    mode: 755
+
+hooks:
+  ApplicationStop:
+    # - location: scripts/deregister_from_elb.sh
+    #   timeout: 300
+    - location: scripts/application_stop.sh
+      timeout: 300
+    - location: scripts/wait_for_bootstrap.sh
+      runas: root
+  ApplicationStart:
+    - location: scripts/application_start.sh
+      timeout: 600
+      runas: root
+    # - location: scripts/register_with_elb.sh
+    #   timeout: 120

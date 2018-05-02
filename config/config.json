@@ -27,18 +27,19 @@
       }
     },
     "cookieSecret": "surveygizmo",
-    "cookieMaxAge": 60000,
+    "cookieMaxAge": 3600000,
     "whitelistRoutes": ["/users/auth", "/users/login"],
+    "bugmuncherApiKey": "cd9d0312a0c59b558394",
     "redisUrl": "//localhost:6379"
   },
   "production": {
     "database": {
-      "host": "localhost",
+      "host": "production-mongo",
       "port": "27017",
       "db": "surveygizmo"
     },
-    "baseUrl": "http://54.208.243.8:3001",
-    "lmsUrl": "http://54.208.243.8",
+    "baseUrl": "https://affiliateapps.fasttrac.org",
+    "lmsUrl": "https://learn.fasttrac.org",
     "sgUrl": "https://restapi.surveygizmo.com/v4/survey",
     "sgSurveyId": 3392617,
     "client": {
@@ -46,7 +47,7 @@
       "secret": "sg-secret"
     },
     "auth": {
-      "tokenHost": "http://54.208.243.8",
+      "tokenHost": "https://learn.fasttrac.org",
       "authorizePath": "/oauth2/authorize",
       "tokenPath": "/oauth2/access_token"
     },
@@ -59,8 +60,9 @@
       }
     },
     "cookieSecret": "surveygizmo",
-    "cookieMaxAge": 60000,
+    "cookieMaxAge": 21600000,
     "whitelistRoutes": ["/users/auth", "/users/login"],
-    "redisUrl": "//localhost:6379"
+    "bugmuncherApiKey": "cd9d0312a0c59b558394",
+    "redisUrl": "//production-redis:6379"
   }
 }
